@@ -4,20 +4,11 @@
             <header class="mb-8">
                 <h1 class="md:text-3xl text-2xl font-bold text-gray-900 mb-4 text-center">Self-Referential Quiz Builder
                 </h1>
-                <p class="md:text-xl text-center text-gray-700 mb-9">
-                    Create, customize, and solve unique self-referential quizzes. Generate hundreds
-                    of questions in seconds.
-                </p>
-                <p class="md:text-lg text-gray-700 mb-6">In self-referential quizzes, each question refers to the quiz
-                    itself, challenging you to think
-                    recursively and consider the quiz as a whole.</p>
-                <p class="md:text-lg text-gray-700 mb-6">
-                    This project was created as a benchmark for evaluating advanced reasoning capabilities in large
-                    language models, and this website provides a user-friendly interface to interact with the quiz
-                    generator and solver.
+                <p class="md:text-xl text-center text-gray-700 mb-4">
+                    Create, customize, and solve unique self-referential quizzes
                 </p>
 
-                <div class="flex justify-center space-x-4">
+                <div class="flex justify-center space-x-4 mb-6">
                     <a href="https://github.com" target="_blank" rel="noopener noreferrer"
                         class="p-2 rounded-md hover:bg-gray-100" aria-label="GitHub">
                         <Github class="w-6 h-6 text-gray-700" />
@@ -31,6 +22,36 @@
                         <!-- <LessWrong class="w-6 h-6 text-gray-700" /> -->
                     </a>
                 </div>
+
+                <p class="text-gray-700 mb-6">
+                    Self-referential quizzes are a fascinating type of logic puzzle that challenge your ability to
+                    reason logically, think recursively and consider the quiz as a whole. Each question refers
+                    to the quiz itself, making the
+                    puzzle a meta-logical challenge. These quizzes can be found online, dating back to the early 1990s,
+                    with some containing as many as
+                    20 questions. Check out the <a href="https://faculty.uml.edu/jpropp/srat-Q.txt"
+                        class="text-blue-800 underline hover:text-blue-900">Self-Referential Aptitude Test (S.R.A.T.) by
+                        James Propp</a> and <a href="https://www.mathpuzzle.com/20questions.htm"
+                        class="text-blue-800 underline hover:text-blue-900">Twenty Questions by Don Woods</a> for
+                    examples.
+                </p>
+
+                <div class="bg-blue-100 border-l-4 border-blue-500 text-blue-800 p-4 mb-6" role="alert">
+                    <p>
+                        <Bot class="w-5 h-5 inline-block" />
+                        This project was created to serve as a benchmark for evaluating advanced reasoning capabilities
+                        in large
+                        language models. This website provides a user-friendly interface to interact with the quiz
+                        generator and solver. It is optimized to create quizzes with hundreds of questions in just
+                        seconds!
+                    </p>
+                </div>
+                <h2 class="md:text-lg text-lg font-bold mb-2">How it works</h2>
+                <ul class="list-disc list-inside text-gray-700 mb-6">
+                    <li>Start by choosing a difficulty level or creating a custom quiz.</li>
+                    <li>Solve the quiz by selecting the correct answer for each question.</li>
+                    <li>Your score is calculated based on the number of correct answers.</li>
+                </ul>
             </header>
 
             <div class="bg-white shadow-md rounded-lg p-6">
@@ -115,7 +136,7 @@
                                         </button>
                                         <button class="p-1 rounded-sm bg-red-500 hover:bg-red-600 text-white"
                                             @click.stop="handleAnswer(question.id, index, 'incorrect')"
-                                            aria-label="Mark as Incorrect">
+                                            aria-label="Mark as Wrong">
                                             <X class="w-4 h-4" />
                                         </button>
                                     </div>
@@ -167,6 +188,8 @@ import {
     X,
     Github,
     Twitter,
+    Info,
+    Bot
 } from 'lucide-vue-next';
 
 type Question = {
@@ -264,7 +287,7 @@ const cardDescription = computed(() =>
     quizState.value === 'setup'
         ? 'Choose your quiz parameters'
         : quizState.value === 'solving'
-            ? 'Select the correct answers and mark incorrect options'
+            ? 'Select the correct answers and mark wrong options'
             : 'See how well you did!'
 );
 </script>
