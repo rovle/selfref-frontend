@@ -65,13 +65,11 @@
                     <div v-if="quizState === 'setup'" class="space-y-4">
                         <div class="flex gap-4">
                             <div class="flex items-center space-x-2">
-                                <input type="radio" id="difficulty" value="difficulty" v-model="generationType"
-                                    class="text-blue-600 focus:ring-blue-500" />
+                                <input type="radio" id="difficulty" value="difficulty" v-model="generationType" />
                                 <label for="difficulty" class="text-gray-700">Difficulty Level</label>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <input type="radio" id="number" value="number" v-model="generationType"
-                                    class="text-blue-600 focus:ring-blue-500" />
+                                <input type="radio" id="number" value="number" v-model="generationType" />
                                 <label for="number" class="text-gray-700">Custom quiz</label>
                             </div>
                         </div>
@@ -88,7 +86,7 @@
                                     @click="difficultyLevel = level.value" :class="[
                                         'px-3 py-2 focus:outline-none',
                                         difficultyLevel === level.value
-                                            ? 'bg-blue-700 text-white'
+                                            ? 'bg-blue-800 text-white'
                                             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                     ]">
                                     {{ level.label }}
@@ -148,8 +146,6 @@
                     <!-- Results -->
                     <div v-else-if="quizState === 'results'" class="text-center">
                         <h3 class="text-2xl font-bold mb-4">Score: {{ score }} / {{ questions.length }}</h3>
-                        <p class="text-gray-700 mb-4">Well done! You've tackled the unique reasoning challenge of the
-                            self-referential quiz.</p>
                     </div>
                 </div>
 
