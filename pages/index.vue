@@ -49,8 +49,10 @@
                 <h2 class="md:text-lg text-lg font-bold mb-2">How it works</h2>
                 <ul class="list-disc list-inside text-gray-700 mb-6">
                     <li>Start by choosing a difficulty level or creating a custom quiz.</li>
-                    <li>Solve the quiz by selecting the correct answer for each question.</li>
-                    <li>Your score is calculated based on the number of correct answers.</li>
+                    <li>You can mark options as correct or wrong by clicking on the green and red buttons that appear
+                        over them.</li>
+                    <li>Each question has only one correct answer. Solve the quiz by selecting the correct answer for
+                        each question.</li>
                 </ul>
             </header>
 
@@ -69,18 +71,16 @@
                                 <label for="difficulty" class="text-gray-700">Difficulty Level</label>
                             </div>
                             <div class="flex items-center space-x-2">
-                                <input type="radio" id="number" value="number" v-model="generationType" />
-                                <label for="number" class="text-gray-700">Custom quiz</label>
+                                <input type="radio" id="custom" value="custom" v-model="generationType" />
+                                <label for="custom" class="text-gray-700">Custom quiz</label>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <input type="radio" id="answerList" value="answerList" v-model="generationType" />
+                                <label for="answerList" class="text-gray-700">Answer List</label>
                             </div>
                         </div>
 
-                        <div v-if="generationType === 'number'" class="flex items-center space-x-4">
-                            <label for="questionCount" class="text-gray-700">Number of questions:</label>
-                            <input id="questionCount" type="number" min="1" max="15" v-model.number="numberOfQuestions"
-                                class="w-20 border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-
-                        <div v-else>
+                        <div v-if="generationType === 'difficulty'">
                             <div class="flex flex-wrap rounded-md">
                                 <button v-for="level in difficultyLevels" :key="level.value"
                                     @click="difficultyLevel = level.value" :class="[
@@ -93,50 +93,76 @@
                                 </button>
                             </div>
                         </div>
+
+                        <div v-if="generationType === 'custom'" class="flex items-center space-x-4">
+                            <label for="questionCount" class="text-gray-700">Number of questions:</label>
+                            <input id="questionCount" type="number" min="1" max="15" v-model.number="numberOfQuestions"
+                                class="w-20 border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+                            <label for="answerUpToLetter" class="text-gray-700">Answers can be up to letter:</label>
+                            <input id="answerUpToLetter" v-model="answerUpToLetter"
+                                class="w-10 border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
+
+                        <div v-if="generationType === 'answerList'" class="flex items-center space-x-4">
+                            <label for="answerList" class="text-gray-700">Answer list:</label>
+                            <input id="answerList" v-model="answerList"
+                                class="w-72 border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        </div>
                     </div>
 
                     <!-- Solving -->
-                    <div v-else-if="quizState === 'solving'" class="grid lg:grid-cols-2 grid-cols-1 gap-8">
-                        <div v-for="question in questions" :key="question.id" class="space-y-4">
-                            <h3 class="font-medium">{{ question.id }}. {{ question.text }}</h3>
-                            <div class="grid grid-cols-1 gap-2">
-                                <div v-for="(option, index) in question.options" :key="index" class="relative group">
-                                    <button
-                                        class="w-full border pr-4 text-left flex justify-between items-center focus:outline-none"
-                                        :class="{
-                                            'bg-green-100 border-green-300': answers[question.id][index] === 'correct',
-                                            'bg-red-100 border-red-300': answers[question.id][index] === 'incorrect',
-                                            'hover:bg-gray-50': answers[question.id][index] === 'unanswered',
-                                        }">
-                                        <span class="text-sm flex">
-                                            <div class="font-bold pl-3 pr-3 py-2 bg-gray-100">
-                                                {{ String.fromCharCode(97 + index).toUpperCase() }}
-                                            </div>
-                                            <div class="pl-3 py-2">
-                                                {{ option }}
-                                            </div>
-                                        </span>
-                                        <!-- Selected Icon -->
-                                        <span v-if="answers[question.id][index] === 'correct'" class="text-green-600">
-                                            <CheckCircle class="w-4 h-4" />
-                                        </span>
-                                        <span v-if="answers[question.id][index] === 'incorrect'" class="text-red-600">
-                                            <XCircle class="w-4 h-4" />
-                                        </span>
-                                    </button>
-                                    <!-- Hover Action Buttons -->
-                                    <div
-                                        class="absolute inset-y-0 right-0 flex items-center pr-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button class="mr-2 p-1 rounded-sm bg-green-500 hover:bg-green-600 text-white"
-                                            @click.stop="handleAnswer(question.id, index, 'correct')"
-                                            aria-label="Mark as Correct">
-                                            <Check class="w-4 h-4" />
+                    <div v-else-if="quizState === 'solving' || quizState === 'results'">
+                        <p class="mb-6 text-gray-600">This quiz has {{ uniqueQuiz ? 'a unique' : 'more than one' }}
+                            solution and was
+                            generated in
+                            {{ generationTime.toFixed(4) }} seconds.</p>
+                        <div class="grid lg:grid-cols-2 grid-cols-1 gap-8">
+                            <div v-for="question in questions" :key="question.id" class="space-y-4">
+                                <h3 class="font-medium">{{ question.id }}. {{ question.text }}</h3>
+                                <div class="grid grid-cols-1 gap-2">
+                                    <div v-for="(option, index) in question.options" :key="index"
+                                        class="relative group">
+                                        <button
+                                            class="w-full border pr-4 text-left flex justify-between items-center focus:outline-none"
+                                            :class="{
+                                                'bg-green-100 border-green-300': answers[question.id][index] === 'correct',
+                                                'bg-red-100 border-red-300': answers[question.id][index] === 'incorrect',
+                                                'hover:bg-gray-50': answers[question.id][index] === 'unanswered',
+                                            }">
+                                            <span class="text-sm flex">
+                                                <div class="font-bold pl-3 pr-3 py-2 bg-gray-100">
+                                                    {{ option.option }}
+                                                </div>
+                                                <div class="pl-3 py-2">
+                                                    {{ option.answer }}
+                                                </div>
+                                            </span>
+                                            <!-- Selected Icon -->
+                                            <span v-if="answers[question.id][index] === 'correct'"
+                                                class="text-green-600">
+                                                <CheckCircle class="w-4 h-4" />
+                                            </span>
+                                            <span v-if="answers[question.id][index] === 'incorrect'"
+                                                class="text-red-600">
+                                                <XCircle class="w-4 h-4" />
+                                            </span>
                                         </button>
-                                        <button class="p-1 rounded-sm bg-red-500 hover:bg-red-600 text-white"
-                                            @click.stop="handleAnswer(question.id, index, 'incorrect')"
-                                            aria-label="Mark as Wrong">
-                                            <X class="w-4 h-4" />
-                                        </button>
+                                        <!-- Hover Action Buttons -->
+                                        <div
+                                            class="absolute inset-y-0 right-0 flex items-center pr-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button
+                                                class="mr-2 p-1 rounded-sm bg-green-500 hover:bg-green-600 text-white"
+                                                @click.stop="handleAnswer(question.id, index, 'correct')"
+                                                aria-label="Mark as Correct">
+                                                <Check class="w-4 h-4" />
+                                            </button>
+                                            <button class="p-1 rounded-sm bg-red-500 hover:bg-red-600 text-white"
+                                                @click.stop="handleAnswer(question.id, index, 'incorrect')"
+                                                aria-label="Mark as Wrong">
+                                                <X class="w-4 h-4" />
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -144,8 +170,21 @@
                     </div>
 
                     <!-- Results -->
-                    <div v-else-if="quizState === 'results'" class="text-center">
-                        <h3 class="text-2xl font-bold mb-4">Score: {{ score }} / {{ questions.length }}</h3>
+                    <div v-if="quizState === 'results'" class="text-center pt-6">
+                        <h3 class="text-xl font-bold mb-4">Number of correct answers: {{ score }} / {{ questions.length
+                            }}</h3>
+                        <p>
+                            <span class="font-bold">
+                                {{ score === questions.length ? "Congratulations!" : 'Good effort!' }}
+                            </span>
+                            Here are the correct answers for each question, in order:
+                        </p>
+                        <div class="my-5 text-xl font-bold">
+                            <span v-for="(question, idx) in questions" :key="question.id" class="mr-1"
+                                :class="question.options[answers[question.id].indexOf('correct')].option === correctAnswers[question.id - 1] ? 'text-green-600' : 'text-red-600'">
+                                {{ correctAnswers[question.id - 1] }}
+                            </span>
+                        </div>
                     </div>
                 </div>
 
@@ -191,18 +230,24 @@ import {
 type Question = {
     id: number;
     text: string;
-    options: string[];
+    options: { option: string; answer: string }[]; // Changed from Map<string, string>
     correctAnswer: number;
 };
 type QuizState = 'setup' | 'solving' | 'results';
 type AnswerState = 'unanswered' | 'correct' | 'incorrect';
 
 const quizState = ref<QuizState>('setup');
-const generationType = ref<'number' | 'difficulty'>('difficulty');
+const generationType = ref<'difficulty', 'custom', 'answerList'>('difficulty');
 const numberOfQuestions = ref(5);
 const difficultyLevel = ref('easy');
+const answerList = ref('')
+const answerUpToLetter = ref('C')
 const questions = ref<Question[]>([]);
 const answers = ref<Record<number, AnswerState[]>>({});
+const correctAnswers = ref<number[]>([]);
+const uniqueQuiz = ref(true);
+const generationTime = ref(null)
+const seed = ref(null)
 const score = ref(0);
 
 const difficultyToQuestionCount = {
@@ -215,35 +260,53 @@ const difficultyToQuestionCount = {
 };
 
 const difficultyLevels = [
-    { value: 'very-easy', label: 'Very Easy' },
-    { value: 'easy', label: 'Easy' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'hard', label: 'Hard' },
-    { value: 'very-hard', label: 'Very Hard' },
-    { value: 'insane', label: 'Insane' },
+    { value: 'very-easy', label: 'Very Easy', questionCount: 3, answerUpToLetter: 'C' },
+    { value: 'easy', label: 'Easy', questionCount: 5, answerUpToLetter: 'D' },
+    { value: 'medium', label: 'Medium', questionCount: 7, answerUpToLetter: 'D' },
+    { value: 'hard', label: 'Hard', questionCount: 10, answerUpToLetter: 'E' },
+    { value: 'very-hard', label: 'Very Hard', questionCount: 20, answerUpToLetter: 'E' },
+    { value: 'insane', label: 'Insane', questionCount: 25, answerUpToLetter: 'F' },
 ];
 
-const generateQuiz = () => {
-    const questionCount =
-        generationType.value === 'number'
-            ? numberOfQuestions.value
-            : difficultyToQuestionCount[difficultyLevel.value as keyof typeof difficultyToQuestionCount];
+const generateQuiz = async () => {
+    try {
+        let numQuestions = 0
+        let answerUpToLetter = 'C'
 
-    const generatedQuestions = Array.from({ length: questionCount }, (_, i) => ({
-        id: i + 1,
-        text: `This is question ${i + 1}. What's the correct answer?`,
-        options: ['A', 'B', 'C', 'D'],
-        correctAnswer: Math.floor(Math.random() * 4),
-    }));
+        if (generationType.value === 'custom') {
+            numQuestions = numberOfQuestions.value
+            answerUpToLetter = answerUpToLetter.value
+        } else if (generationType.value === 'difficulty') {
+            numQuestions = difficultyLevels.find((level) => level.value === difficultyLevel.value).questionCount
+            answerUpToLetter = difficultyLevels.find((level) => level.value === difficultyLevel.value).answerUpToLetter
+        } else if (generationType.value === 'answerList') {
+            numQuestions = answerList.value.length
+        }
 
-    questions.value = generatedQuestions;
-    answers.value = Object.fromEntries(
-        generatedQuestions.map((q) => [q.id, Array(4).fill('unanswered')])
-    );
-    quizState.value = 'solving';
+        const response = await fetch('http://127.0.0.1:8000/quizzes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ num_questions: numQuestions, answer_list: answerList.value, answer_up_to_letter: answerUpToLetter }),
+        });
+        const data = await response.json();
+        console.log(data);
+        questions.value = data.quiz;
+        correctAnswers.value = data.answers;
+        uniqueQuiz.value = data.unique_quiz;
+        generationTime.value = data.generation_time;
+        seed.value = data.seed;
+        answers.value = Object.fromEntries(
+            data.quiz.map((q: Question) => [q.id, Array(4).fill('unanswered')])
+        );
+        quizState.value = 'solving';
+    } catch (error) {
+        console.error('Error generating quiz:', error);
+    }
 };
 
 const handleAnswer = (questionId: number, optionIndex: number, newState: AnswerState) => {
+    if (quizState.value !== 'solving') return;
+
     const currentAnswers = answers.value[questionId];
     const newAnswers = [...currentAnswers];
     if (newState === 'correct') {
@@ -255,13 +318,21 @@ const handleAnswer = (questionId: number, optionIndex: number, newState: AnswerS
 };
 
 const submitQuiz = () => {
-    let correctAnswers = 0;
-    questions.value.forEach((question) => {
-        if (answers.value[question.id][question.correctAnswer] === 'correct') {
-            correctAnswers++;
+    let numCorrectAnswers = 0;
+    questions.value.forEach(question => {
+        const selected_answer_idx = answers.value[question.id].indexOf('correct');
+        const selected_option = question.options[selected_answer_idx].option;
+        const correct_option = correctAnswers.value[question.id - 1];
+
+        if (selected_option === correct_option) {
+            numCorrectAnswers++;
         }
     });
-    score.value = correctAnswers;
+
+    console.log(questions.value);
+    console.log(answers.value);
+
+    score.value = numCorrectAnswers;
     quizState.value = 'results';
 };
 
