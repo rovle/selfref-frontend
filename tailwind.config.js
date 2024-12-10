@@ -7,9 +7,9 @@
  module.exports = {
   theme: {
     fontFamily: {
-      'sans': ['"Inter"', 'ui-sans-serif', 'system-ui'],
-      'display': ['"Inter"'],
-      'body': ['"Inter"'],
+      'sans': ['"Geist Mono"', 'monospace'],
+      'display': ['"Geist Mono"', 'monospace'],
+      'body': ['"Geist Mono"', 'monospace'],
     }
   }
 };
