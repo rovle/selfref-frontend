@@ -126,7 +126,7 @@
 
           <!-- Solving -->
           <div v-else-if="quizState === 'solving' || quizState === 'results'">
-            <p class="mb-6 text-gray-600 dark:text-gray-400">
+            <p class="mb-6 text-gray-600 dark:text-gray-400 text-sm">
               This quiz has {{ uniqueQuiz ? 'a unique' : 'more than one' }}
               solution and was generated in
               {{ generationTime?.toFixed(4) }} seconds.
@@ -147,10 +147,10 @@
                 v-for="question in questions"
                 :key="question.id"
                 :class="{ 'hide-incorrect': wrongOptionsHidden }"
-                class="space-y-4 flex flex-col justify-between"
+                class="space-y-4 flex flex-col"
               >
                 <!-- Question text -->
-                <h3 class="font-medium">
+                <h3 class="text-sm lg:text-base font-medium">
                   {{ question.id }}. {{ question.text }}
                 </h3>
 
@@ -166,7 +166,7 @@
                     }"
                   >
                     <div
-                      class="w-full pr-3 text-left flex justify-between items-center focus:outline-none"
+                      class="w-full pr-3 text-left flex items-center focus:outline-none"
                       :class="{
                         'border-green-400':
                           answers[question.id][index] === 'correct',
@@ -183,7 +183,7 @@
                           <button
                             class="flex px-2 py-2 border bg-gray-100 hover:bg-green-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-green-700 dark:hover:text-white"
                             :class="{
-                              'border-green-400 bg-green-500/80 dark:bg-green-800 dark:border-green-800 dark:text-white':
+                              'border-green-400 bg-green-500/80 dark:bg-green-700/90 dark:border-green-800 dark:text-white':
                                 answers[question.id][index] === 'correct',
                               'text-neutral-600 dark:text-neutral-500 dark:border-neutral-950':
                                 answers[question.id][index] === 'incorrect',
@@ -200,7 +200,7 @@
 
                           <!-- Wrong button -->
                           <button
-                            class="flex px-2 py-2 border bg-neutral-100 hover:bg-red-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-red-700 dark:hover:text-white"
+                            class="flex px-2 py-2 border bg-neutral-100 hover:bg-red-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-red-800/90 dark:hover:text-white"
                             :class="{
                               'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950 text-neutral-900 dark:text-white':
                                 answers[question.id][index] === 'incorrect',
@@ -223,7 +223,7 @@
                         <div
                           class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 bg-gray-100 dark:text-neutral-200 dark:bg-neutral-950 border"
                           :class="{
-                            'border-green-400 bg-green-500/80 dark:bg-green-800 dark:border-green-800':
+                            'border-green-400 bg-green-500/80 dark:bg-green-700/90 dark:border-green-800':
                               answers[question.id][index] === 'correct',
                             'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950':
                               answers[question.id][index] === 'incorrect',
