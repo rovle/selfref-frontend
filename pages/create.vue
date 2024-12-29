@@ -200,7 +200,7 @@
 
                           <!-- Wrong button -->
                           <button
-                            class="flex px-2 py-2 border bg-neutral-100 hover:bg-red-600 hover:text-black dark:bg-neutral-950 dark:hover:bg-red-700 dark:hover:text-white"
+                            class="flex px-2 py-2 border bg-neutral-100 hover:bg-red-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-red-700 dark:hover:text-white"
                             :class="{
                               'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950 text-neutral-900 dark:text-white':
                                 answers[question.id][index] === 'incorrect',
