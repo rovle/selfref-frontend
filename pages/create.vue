@@ -195,13 +195,13 @@
                         <div class="flex items-center text-black">
                           <!-- Check button -->
                           <button
-                            class="flex px-2 py-2 border bg-neutral-100 hover:bg-green-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-green-700 dark:hover:text-white"
+                            class="flex px-2 py-2 border hover:bg-green-500 hover:text-black dark:hover:bg-green-600 dark:hover:text-white"
                             :class="{
                               'border-green-400 bg-green-500/80 dark:bg-green-700 dark:border-green-800 dark:text-white':
                                 answers[question.id][index] === 'correct',
-                              'text-neutral-600 dark:text-neutral-500 dark:border-neutral-950':
+                              'text-neutral-600 dark:bg-neutral-950 dark:text-neutral-500 dark:border-neutral-950':
                                 answers[question.id][index] === 'incorrect',
-                              'text-neutral-600 dark:text-neutral-400 dark:border-neutral-950':
+                              'text-neutral-600 bg-neutral-100 dark:bg-neutral-950 dark:text-neutral-400 dark:border-neutral-950':
                                 answers[question.id][index] === 'unanswered',
                             }"
                             @click.stop="
@@ -235,13 +235,13 @@
 
                         <!-- Option letter -->
                         <div
-                          class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 bg-neutral-100 dark:text-neutral-200 dark:bg-neutral-950 border"
+                          class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 dark:text-neutral-200 border"
                           :class="{
                             'border-green-400 bg-green-500/80 dark:bg-green-700 dark:border-green-800':
                               answers[question.id][index] === 'correct',
                             'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950':
                               answers[question.id][index] === 'incorrect',
-                            'border-neutral-200 dark:border-neutral-950 dark:text-neutral-200':
+                            'bg-neutral-100 border-neutral-200 dark:bg-neutral-950 dark:border-neutral-950 dark:text-neutral-200':
                               answers[question.id][index] === 'unanswered',
                           }"
                         >
