@@ -14,7 +14,9 @@
       >
         Self-Referential Quiz Builder
       </h1>
-      <p class="mb-8 max-w-2xl text-center text-gray-600 dark:text-gray-400 z-50">
+      <p
+        class="mb-8 max-w-2xl text-center text-gray-600 dark:text-gray-400 z-50"
+      >
         Create, customize, and solve unique self-referential quizzes that
         challenge your logical reasoning abilities.
       </p>
@@ -72,7 +74,7 @@ ul.ouroboros {
   height: $dim;
   width: $dim;
   position: absolute;
-  top: 28%;
+  top: 26%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 0;

@@ -26,19 +26,47 @@
           </NuxtLink>
         </div>
       </div>
-      <NuxtLink
-        to="https://github.com/rovle/self-referential-quizzes"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center gap-2 text-sm hover:opacity-70"
-      >
-        <Github class="h-4 w-4" />
-        Star on GitHub
-      </NuxtLink>
+      <div class="flex items-center gap-4">
+        <NuxtLink
+          to="https://github.com/rovle/self-referential-quizzes"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="flex items-center gap-2 text-sm hover:opacity-70"
+        >
+          <Icon name="mdi:github" class="h-4 w-4" />
+          Star on GitHub
+        </NuxtLink>
+        <button
+          @click="toggleColorMode"
+          class="flex items-center justify-center p-1 pb-0 transition-colors focus:outline-none rounded-md hover:bg-black/5 hover:dark:bg-white/5"
+          aria-label="Toggle color mode"
+        >
+          <!-- Sun icon for light mode -->
+          <span v-if="$colorMode.value === 'light'" class="text-gray-700">
+            <Icon name="mdi:white-balance-sunny" class="h-5 w-5" />
+          </span>
+
+          <!-- Moon icon for dark mode -->
+          <span v-else class="text-gray-200">
+            <Icon
+              name="material-symbols-light:dark-mode-rounded"
+              class="h-5 w-5"
+            />
+          </span>
+        </button>
+      </div>
     </nav>
   </header>
 </template>
 
 <script setup lang="ts">
-import { Github } from 'lucide-vue-next';
+const colorMode = useColorMode();
+
+const toggleColorMode = () => {
+  if (colorMode.value === 'light') {
+    colorMode.preference = 'dark';
+  } else {
+    colorMode.preference = 'light';
+  }
+};
 </script>

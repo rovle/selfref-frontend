@@ -3,7 +3,7 @@
     <AppNavbar />
     <div class="px-4 pt-20">
       <div
-        class="mx-auto max-w-2xl border-black/10 border dark:border-white/20 text-black dark:text-white"
+        class="mx-auto max-w-3xl border-black/10 border dark:border-white/20 text-black dark:text-white"
       >
         <div class="p-6 border-b dark:border-white/20">
           <h2 class="mb-2 md:text-2xl text-xl font-bold">{{ cardTitle }}</h2>
@@ -60,10 +60,10 @@
                   :key="mode.value"
                   @click="difficultyLevel = mode.value"
                   :class="[
-                    'px-2 py-2 rounded-md focus:outline-none ',
+                    'px-2 py-2 rounded-sm focus:outline-none ',
                     difficultyLevel === mode.value
-                      ? 'bg-white text-black'
-                      : 'bg-neutral-900 text-white hover:bg-neutral-800',
+                      ? 'bg-neutral-900 text-white dark:bg-white dark:text-black'
+                      : 'bg-gray-200 text-black hover:bg-gray-300 dark:bg-neutral-900 dark:text-white hover:bg-neutral-800',
                   ]"
                 >
                   {{ mode.label }}
@@ -72,38 +72,55 @@
             </div>
 
             <div v-if="generationType === 'custom'" class="flex items-center">
-              <label for="questionCount" class="mr-2"
-                >Number of questions:</label
-              >
-              <input
-                id="questionCount"
-                type="number"
-                min="1"
-                max="15"
-                v-model.number="numberOfQuestions"
-                class="text-black w-20 border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-700 mr-5"
-              />
-
-              <label for="answerUpToLetter" class="mr-2"
-                >Answers can be up to letter:</label
-              >
-              <input
-                id="answerUpToLetter"
-                v-model="answerUpToLetter"
-                class="text-black w-10 border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-700"
-              />
+              <div class="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2">
+                <div>
+                  <label
+                    for="questionCount"
+                    class="mb-2 inline-block text-sm text-neutral-700 dark:text-neutral-300 sm:text-base"
+                    >Number of questions*</label
+                  >
+                  <input
+                    id="questionCount"
+                    type="number"
+                    min="1"
+                    max="500"
+                    v-model.number="numberOfQuestions"
+                    class="w-full px-2 py-1 text-neutral-700 bg-white border border-neutral-200 dark:bg-neutral-900 dark:text-neutral-300 dark:border-neutral-600 focus:border-green-400 dark:focus:border-green-300 focus:outline-none"
+                  />
+                </div>
+                <div>
+                  <label
+                    for="answerUpToLetter"
+                    class="mb-2 inline-block text-sm text-neutral-700 dark:text-neutral-300 sm:text-base"
+                    >Answers can be up to letter*</label
+                  >
+                  <input
+                    id="answerUpToLetter"
+                    v-model="answerUpToLetter"
+                    class="w-full px-2 py-1 text-neutral-700 bg-white border border-neutral-200 dark:bg-neutral-900 dark:text-neutral-300 dark:border-neutral-600 focus:border-green-400 dark:focus:border-green-300 focus:outline-none"
+                  />
+                </div>
+              </div>
             </div>
 
             <div
               v-if="generationType === 'answerList'"
               class="flex items-center space-x-4"
             >
-              <label for="answerList">Answer list:</label>
-              <input
-                id="answerList"
-                v-model="answerList"
-                class="text-black w-72 border rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-gray-700"
-              />
+              <div class="mx-auto grid max-w-screen-md gap-4 sm:grid-cols-2">
+                <div>
+                  <label
+                    for="answerList"
+                    class="mb-2 inline-block text-sm text-neutral-700 dark:text-neutral-300 sm:text-base"
+                    >Answer list*</label
+                  >
+                  <input
+                    id="answerList"
+                    v-model="answerList"
+                    class="w-full px-2 py-1 text-neutral-700 bg-white border border-neutral-200 dark:bg-neutral-900 dark:text-neutral-300 dark:border-neutral-600 focus:border-green-400 dark:focus:border-green-300 focus:outline-none"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
@@ -114,10 +131,19 @@
               solution and was generated in
               {{ generationTime?.toFixed(4) }} seconds.
             </p>
+            <div class="flex items-center justify-end">
+              <button
+                @click="toggleWrongOptions()"
+                class="flex items-center text-rose-600 dark:text-rose-500 font-medium uppercase text-sm px-4 py-2 hover:text-rose-700 dark:hover:text-rose-600 mb-3"
+              >
+                {{ wrongOptionsHidden ? 'Show' : 'Hide' }} wrong options
+              </button>
+            </div>
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-8">
               <div
                 v-for="question in questions"
                 :key="question.id"
+                :class="{ 'hide-incorrect': wrongOptionsHidden }"
                 class="space-y-4"
               >
                 <h3 class="font-medium">
@@ -128,72 +154,89 @@
                     v-for="(option, index) in question.options"
                     :key="index"
                     class="relative group"
+                    :class="{
+                      'incorrect-option-container':
+                        answers[question.id][index] === 'incorrect',
+                    }"
                   >
-                    <button
-                      class="w-full border-2 pr-4 text-left flex justify-between items-center focus:outline-none dark:hover:bg-neutral-900"
+                    <div
+                      class="w-full pr-3 text-left flex justify-between items-center focus:outline-none"
                       :class="{
                         'border-green-400':
                           answers[question.id][index] === 'correct',
                         'border-rose-400':
                           answers[question.id][index] === 'incorrect',
-                        'border-gray-500':
+                        'border-neutral-800':
                           answers[question.id][index] === 'unanswered',
                       }"
                     >
-                      <span class="text-sm flex">
+                      <span class="w-full text-sm flex items-center">
+                        <!-- Action Buttons -->
+                        <div class="flex items-center text-black">
+                          <button
+                            class="flex px-2 py-2 border border-green-600 bg-green-400 hover:bg-green-500 hover:opacity-100 dark:bg-green-700/50 dark:border-green-900 dark:hover:bg-green-700/80 dark:text-white"
+                            :class="{
+                              'opacity-100':
+                                answers[question.id][index] === 'correct',
+                              'opacity-10':
+                                answers[question.id][index] === 'incorrect',
+                              'opacity-15':
+                                answers[question.id][index] === 'unanswered',
+                            }"
+                            @click.stop="
+                              handleAnswer(question.id, index, 'correct')
+                            "
+                            aria-label="Mark as Correct"
+                          >
+                            <Icon name="mdi:check" size="16" />
+                          </button>
+                          <button
+                            class="flex px-2 py-2 border border-rose-600 bg-rose-400 hover:bg-rose-500 hover:opacity-100 dark:bg-rose-700/50 dark:border-rose-900 dark:hover:bg-rose-700/80 dark:text-white"
+                            :class="{
+                              'opacity-100':
+                                answers[question.id][index] === 'incorrect',
+                              'opacity-10':
+                                answers[question.id][index] === 'correct',
+                              'opacity-15':
+                                answers[question.id][index] === 'unanswered',
+                            }"
+                            @click.stop="
+                              handleAnswer(question.id, index, 'incorrect')
+                            "
+                            aria-label="Mark as Wrong"
+                          >
+                            <Icon name="mdi:close" size="16" />
+                          </button>
+                        </div>
+                        <!-- End Action Buttons -->
+
                         <div
-                          class="font-bold pl-3 pr-2 py-2 bg-gray-100 dark:bg-neutral-900 border-r"
+                          class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 bg-gray-100 dark:text-neutral-200 dark:bg-neutral-950 border"
                           :class="{
-                            'border-green-400':
+                            'bg-green-400 border-green-600 dark:bg-green-700/50 dark:border-green-800':
                               answers[question.id][index] === 'correct',
-                            'border-rose-400':
+                            'bg-rose-400 border-rose-600 dark:bg-rose-700/50 dark:border-rose-800':
                               answers[question.id][index] === 'incorrect',
-                            'border-gray-500':
+                            'border-neutral-200 dark:border-neutral-900 dark:text-neutral-200':
                               answers[question.id][index] === 'unanswered',
                           }"
                         >
                           {{ option.option }}.
                         </div>
-                        <div class="pl-3 py-2">
+                        <div
+                          class="w-full pl-3 pr-3 py-1.5 border"
+                          :class="{
+                            'border-green-200 bg-green-100 dark:border-green-500/10 dark:bg-green-400/10':
+                              answers[question.id][index] === 'correct',
+                            'border-rose-200 bg-rose-100 dark:border-rose-500/10 dark:bg-rose-400/10':
+                              answers[question.id][index] === 'incorrect',
+                            'border-neutral-100 dark:border-neutral-900':
+                              answers[question.id][index] === 'unanswered',
+                          }"
+                        >
                           {{ option.answer }}
                         </div>
                       </span>
-                      <!-- Selected Icon -->
-                      <span
-                        v-if="answers[question.id][index] === 'correct'"
-                        class="text-green-500"
-                      >
-                        <CheckCircle class="w-4 h-4" />
-                      </span>
-                      <span
-                        v-if="answers[question.id][index] === 'incorrect'"
-                        class="text-rose-500"
-                      >
-                        <XCircle class="w-4 h-4" />
-                      </span>
-                    </button>
-                    <!-- Hover Action Buttons -->
-                    <div
-                      class="absolute inset-y-0 right-0 flex items-center pr-3 opacity-0 group-hover:opacity-100 transition-opacity text-black"
-                    >
-                      <button
-                        class="mr-2 p-0.5 bg-green-500 hover:bg-green-600"
-                        @click.stop="
-                          handleAnswer(question.id, index, 'correct')
-                        "
-                        aria-label="Mark as Correct"
-                      >
-                        <Check class="w-5 h-5" />
-                      </button>
-                      <button
-                        class="p-0.5 bg-rose-500 hover:bg-rose-600"
-                        @click.stop="
-                          handleAnswer(question.id, index, 'incorrect')
-                        "
-                        aria-label="Mark as Wrong"
-                      >
-                        <X class="w-5 h-5" />
-                      </button>
                     </div>
                   </div>
                 </div>
@@ -243,13 +286,21 @@
             Generate Quiz
           </button>
           <div v-else-if="quizState === 'solving'" class="flex justify-between">
-            <button
-              @click="resetQuiz"
-              class="flex items-center bg-black dark:bg-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
-            >
-              <ArrowLeft class="w-4 h-4 mr-2" />
-              Go Back
-            </button>
+            <div class="flex gap-4">
+              <button
+                @click="goBack"
+                class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
+              >
+                <ArrowLeft class="w-4 h-4 mr-2" />
+                Go Back
+              </button>
+              <button
+                @click="resetQuiz"
+                class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
+              >
+                Reset quiz
+              </button>
+            </div>
             <button
               @click="submitQuiz"
               class="bg-green-500 hover:bg-green-600 text-black font-medium uppercase text-sm px-4 py-2"
@@ -257,13 +308,20 @@
               Submit Quiz
             </button>
           </div>
-          <button
-            v-else-if="quizState === 'results'"
-            @click="resetQuiz"
-            class="bg-black dark:bg-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
-          >
-            Try Another Quiz
-          </button>
+          <div v-else-if="quizState === 'results'" class="flex gap-4">
+            <button
+              @click="goBack"
+              class="bg-neutral-900 dark:bg-white text-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
+            >
+              Try Another Quiz
+            </button>
+            <button
+              @click="resetQuiz"
+              class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
+            >
+              Reset quiz
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -271,7 +329,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft, Check, CheckCircle, X, XCircle } from 'lucide-vue-next';
+import { ArrowLeft } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import AppNavbar from './layout/AppNavbar.vue';
 
@@ -311,6 +369,7 @@ const uniqueQuiz = ref(true);
 const generationTime = ref<number | null>(null);
 const seed = ref(null);
 const score = ref(0);
+const wrongOptionsHidden = ref(false);
 
 const difficultyModes: DifficultyMode[] = [
   {
@@ -373,7 +432,10 @@ const generateQuiz = async () => {
     generationTime.value = data.generation_time;
     seed.value = data.seed;
     answers.value = Object.fromEntries(
-      data.quiz.map((q: Question) => [q.id, Array(4).fill('unanswered')])
+      data.quiz.map((q: Question) => [
+        q.id,
+        Array(q.options.length).fill('unanswered'),
+      ])
     );
     quizState.value = 'solving';
   } catch (error) {
@@ -418,10 +480,23 @@ const submitQuiz = () => {
   quizState.value = 'results';
 };
 
-const resetQuiz = () => {
+const goBack = () => {
   quizState.value = 'setup';
   answers.value = {};
   score.value = 0;
+};
+
+const resetQuiz = () => {
+  questions.value.forEach((question) => {
+    answers.value[question.id] = Array(question.options.length).fill(
+      'unanswered'
+    );
+  });
+  quizState.value = 'solving';
+};
+
+const toggleWrongOptions = () => {
+  wrongOptionsHidden.value = !wrongOptionsHidden.value;
 };
 
 const cardTitle = computed(() =>
@@ -441,4 +516,8 @@ const cardDescription = computed(() =>
 );
 </script>
 
-<style></style>
+<style>
+.hide-incorrect .incorrect-option-container {
+  display: none;
+}
+</style>
