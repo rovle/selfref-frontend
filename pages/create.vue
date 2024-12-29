@@ -197,7 +197,7 @@
                           <button
                             class="flex px-2 py-2 border bg-neutral-100 hover:bg-green-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-green-700 dark:hover:text-white"
                             :class="{
-                              'border-green-400 bg-green-500/80 dark:bg-green-700/90 dark:border-green-800 dark:text-white':
+                              'border-green-400 bg-green-500/80 dark:bg-green-700 dark:border-green-800 dark:text-white':
                                 answers[question.id][index] === 'correct',
                               'text-neutral-600 dark:text-neutral-500 dark:border-neutral-950':
                                 answers[question.id][index] === 'incorrect',
@@ -237,7 +237,7 @@
                         <div
                           class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 bg-neutral-100 dark:text-neutral-200 dark:bg-neutral-950 border"
                           :class="{
-                            'border-green-400 bg-green-500/80 dark:bg-green-700/90 dark:border-green-800':
+                            'border-green-400 bg-green-500/80 dark:bg-green-700 dark:border-green-800':
                               answers[question.id][index] === 'correct',
                             'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950':
                               answers[question.id][index] === 'incorrect',
