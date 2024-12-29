@@ -28,12 +28,12 @@
         Start creating
       </NuxtLink>
       <section class="mt-28 grid gap-12 p-6 border dark:border-white/20">
-        <div class="max-w-2xl space-y-8">
+        <div class="max-w-2xl space-y-6">
           <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
             How it works
           </h2>
           <ul
-            class="list-inside list-disc space-y-4 text-gray-600 dark:text-gray-400"
+            class="list-inside list-disc space-y-2 text-gray-600 dark:text-gray-400"
           >
             <li>
               Start by choosing a difficulty level or creating a custom quiz.
@@ -43,8 +43,8 @@
               challenge.
             </li>
             <li>
-              Mark options as correct or wrong by clicking on the green and red
-              buttons that appear over them.
+              Click on the buttons to the left of each option to mark them as
+              correct or incorrect.
             </li>
             <li>
               Each question has only one correct answer. Solve the quiz by
