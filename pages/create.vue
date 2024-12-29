@@ -7,7 +7,7 @@
       >
         <div class="p-6 border-b dark:border-white/20">
           <h2 class="mb-2 md:text-2xl text-xl font-bold">{{ cardTitle }}</h2>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="text-sm text-neutral-600 dark:text-neutral-400">
             {{ cardDescription }}
           </p>
         </div>
@@ -63,7 +63,7 @@
                     'px-2 py-2 rounded-sm focus:outline-none ',
                     difficultyLevel === mode.value
                       ? 'bg-neutral-900 text-white dark:bg-white dark:text-black'
-                      : 'bg-gray-200 text-black hover:bg-gray-300 dark:bg-neutral-900 dark:text-white hover:bg-neutral-800',
+                      : 'bg-neutral-200 text-black hover:bg-neutral-300 dark:bg-neutral-900 dark:text-white hover:bg-neutral-800',
                   ]"
                 >
                   {{ mode.label }}
@@ -126,20 +126,34 @@
 
           <!-- Solving -->
           <div v-else-if="quizState === 'solving' || quizState === 'results'">
-            <p class="mb-6 text-gray-600 dark:text-gray-400 text-sm">
+            <p class="mb-6 text-neutral-600 dark:text-neutral-400 text-sm">
               This quiz has {{ uniqueQuiz ? 'a unique' : 'more than one' }}
               solution and was generated in
               {{ generationTime?.toFixed(4) }} seconds.
             </p>
 
             <!-- Toggle wrong options -->
-            <div class="flex items-center justify-end">
-              <button
-                @click="toggleWrongOptions()"
-                class="flex items-center text-red-600 dark:text-red-500 font-medium uppercase text-sm px-4 py-2 hover:text-red-700 dark:hover:text-red-600 mb-3"
-              >
-                {{ wrongOptionsHidden ? 'Show' : 'Hide' }} wrong options
-              </button>
+            <div class="flex items-center gap-2 mb-6">
+              <label class="inline-flex items-center cursor-pointer">
+                <div class="relative flex items-center">
+                  <input
+                    type="checkbox"
+                    :checked="wrongOptionsHidden"
+                    @change="toggleWrongOptions()"
+                    class="appearance-none w-4 h-4 text-red-600 bg-white rounded border-neutral-300 checked:bg-red-500 hover:checked:bg-red-600 dark:checked:bg-red-600 dark:hover:checked:bg-red-700 bg-neutral-200 dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
+                  />
+                  <Icon
+                    v-if="wrongOptionsHidden"
+                    name="mdi:check"
+                    class="absolute inset-0 w-4 h-4 text-white pointer-events-none flex items-center justify-center"
+                  />
+                </div>
+                <span
+                  class="ml-2 text-sm font-medium text-neutral-700 dark:text-neutral-300 flex items-center"
+                >
+                  Hide wrong options
+                </span>
+              </label>
             </div>
 
             <div class="grid lg:grid-cols-2 grid-cols-1 gap-12">
@@ -181,7 +195,7 @@
                         <div class="flex items-center text-black">
                           <!-- Check button -->
                           <button
-                            class="flex px-2 py-2 border bg-gray-100 hover:bg-green-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-green-700 dark:hover:text-white"
+                            class="flex px-2 py-2 border bg-neutral-100 hover:bg-green-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-green-700 dark:hover:text-white"
                             :class="{
                               'border-green-400 bg-green-500/80 dark:bg-green-700/90 dark:border-green-800 dark:text-white':
                                 answers[question.id][index] === 'correct',
@@ -221,7 +235,7 @@
 
                         <!-- Option letter -->
                         <div
-                          class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 bg-gray-100 dark:text-neutral-200 dark:bg-neutral-950 border"
+                          class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 bg-neutral-100 dark:text-neutral-200 dark:bg-neutral-950 border"
                           :class="{
                             'border-green-400 bg-green-500/80 dark:bg-green-700/90 dark:border-green-800':
                               answers[question.id][index] === 'correct',
