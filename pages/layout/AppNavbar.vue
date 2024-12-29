@@ -5,11 +5,11 @@
     <nav
       class="mx-auto flex h-14 max-w-screen-xl items-center justify-between px-4"
     >
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-8">
         <NuxtLink to="/" aria-label="Home" class="text-sm font-bold">
           LOGO
         </NuxtLink>
-        <div class="items-center gap-4 sm:flex">
+        <div class="items-center gap-4 flex">
           <NuxtLink
             to="/create"
             aria-label="Create"
@@ -35,8 +35,8 @@
           rel="noopener noreferrer"
           class="flex items-center gap-2 text-sm hover:opacity-70"
         >
-          <Icon name="mdi:github" class="h-4 w-4" />
-          Star on GitHub
+          <Icon name="mdi:github" class="h-5 w-5" />
+          <span class="hidden sm:block">Star on GitHub</span>
         </NuxtLink>
         <button
           @click="toggleColorMode"

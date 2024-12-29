@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen py-8 bg-white dark:bg-black">
     <AppNavbar />
-    <div class="px-4 pt-20">
+    <div class="sm:px-4 pt-6 sm:pt-10 md:pt-12">
       <div
-        class="mx-auto max-w-4xl border-black/10 border dark:border-white/20 text-black dark:text-white"
+        class="mx-auto max-w-4xl border-black/10 sm:border dark:border-white/20 text-black dark:text-white"
       >
         <div class="p-6 border-b dark:border-white/20">
           <h2 class="mb-2 md:text-2xl text-xl font-bold">{{ cardTitle }}</h2>
@@ -169,7 +169,7 @@
                 </h3>
 
                 <!-- Question options -->
-                <div class="flex flex-col gap-2 w-9/12">
+                <div class="flex flex-col gap-2 w-full md:w-9/12">
                   <div
                     v-for="(option, index) in question.options"
                     :key="index"
@@ -312,7 +312,7 @@
             Generate Quiz
           </button>
           <div v-else-if="quizState === 'solving'" class="flex justify-between">
-            <div class="flex gap-4">
+            <div class="flex gap-3">
               <button
                 @click="goBack"
                 class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
@@ -324,14 +324,14 @@
                 @click="resetQuiz"
                 class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
               >
-                Reset quiz
+                Reset
               </button>
             </div>
             <button
               @click="submitQuiz"
               class="bg-green-500 hover:bg-green-600 text-black font-medium uppercase text-sm px-4 py-2"
             >
-              Submit Quiz
+              Submit
             </button>
           </div>
           <div v-else-if="quizState === 'results'" class="flex gap-4">
@@ -441,15 +441,18 @@ const generateQuiz = async () => {
       numQuestions = answerList.value.length;
     }
 
-    const response = await fetch('http://127.0.0.1:8000/quizzes', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        num_questions: numQuestions,
-        answer_list: answerList.value,
-        answer_up_to_letter: answerUpTo,
-      }),
-    });
+    const response = await fetch(
+      'https://representing-makes-premises-bomb.trycloudflare.com/quizzes',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          num_questions: numQuestions,
+          answer_list: answerList.value,
+          answer_up_to_letter: answerUpTo,
+        }),
+      }
+    );
     const data = await response.json();
     console.log(data);
     questions.value = data.quiz;

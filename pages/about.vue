@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-black">
+  <div class="min-h-screen pb-8 bg-white dark:bg-black">
     <AppNavbar />
     <main class="mx-auto max-w-screen-xl px-4 pt-24">
       <div class="mx-auto max-w-2xl space-y-8">
