@@ -3,7 +3,7 @@
     <AppNavbar />
     <div class="px-4 pt-20">
       <div
-        class="mx-auto max-w-3xl border-black/10 border dark:border-white/20 text-black dark:text-white"
+        class="mx-auto max-w-4xl border-black/10 border dark:border-white/20 text-black dark:text-white"
       >
         <div class="p-6 border-b dark:border-white/20">
           <h2 class="mb-2 md:text-2xl text-xl font-bold">{{ cardTitle }}</h2>
@@ -131,25 +131,31 @@
               solution and was generated in
               {{ generationTime?.toFixed(4) }} seconds.
             </p>
+
+            <!-- Toggle wrong options -->
             <div class="flex items-center justify-end">
               <button
                 @click="toggleWrongOptions()"
-                class="flex items-center text-rose-600 dark:text-rose-500 font-medium uppercase text-sm px-4 py-2 hover:text-rose-700 dark:hover:text-rose-600 mb-3"
+                class="flex items-center text-red-600 dark:text-red-500 font-medium uppercase text-sm px-4 py-2 hover:text-red-700 dark:hover:text-red-600 mb-3"
               >
                 {{ wrongOptionsHidden ? 'Show' : 'Hide' }} wrong options
               </button>
             </div>
-            <div class="grid lg:grid-cols-2 grid-cols-1 gap-8">
+
+            <div class="grid lg:grid-cols-2 grid-cols-1 gap-12">
               <div
                 v-for="question in questions"
                 :key="question.id"
                 :class="{ 'hide-incorrect': wrongOptionsHidden }"
-                class="space-y-4"
+                class="space-y-4 flex flex-col justify-between"
               >
+                <!-- Question text -->
                 <h3 class="font-medium">
                   {{ question.id }}. {{ question.text }}
                 </h3>
-                <div class="grid grid-cols-1 gap-2">
+
+                <!-- Question options -->
+                <div class="flex flex-col gap-2 w-9/12">
                   <div
                     v-for="(option, index) in question.options"
                     :key="index"
@@ -164,7 +170,7 @@
                       :class="{
                         'border-green-400':
                           answers[question.id][index] === 'correct',
-                        'border-rose-400':
+                        'border-red-400':
                           answers[question.id][index] === 'incorrect',
                         'border-neutral-800':
                           answers[question.id][index] === 'unanswered',
@@ -173,14 +179,15 @@
                       <span class="w-full text-sm flex items-center">
                         <!-- Action Buttons -->
                         <div class="flex items-center text-black">
+                          <!-- Check button -->
                           <button
-                            class="flex px-2 py-2 border border-green-600 bg-green-400 hover:bg-green-500 hover:opacity-100 dark:bg-green-700/50 dark:border-green-900 dark:hover:bg-green-700/80 dark:text-white"
+                            class="flex px-2 py-2 border bg-gray-100 hover:bg-green-500 hover:text-black dark:bg-neutral-950 dark:hover:bg-green-700 dark:hover:text-white"
                             :class="{
-                              'opacity-100':
+                              'border-green-400 bg-green-500/80 dark:bg-green-800 dark:border-green-800 dark:text-white':
                                 answers[question.id][index] === 'correct',
-                              'opacity-10':
+                              'text-neutral-600 dark:text-neutral-500 dark:border-neutral-950':
                                 answers[question.id][index] === 'incorrect',
-                              'opacity-15':
+                              'text-neutral-600 dark:text-neutral-400 dark:border-neutral-950':
                                 answers[question.id][index] === 'unanswered',
                             }"
                             @click.stop="
@@ -190,14 +197,16 @@
                           >
                             <Icon name="mdi:check" size="16" />
                           </button>
+
+                          <!-- Wrong button -->
                           <button
-                            class="flex px-2 py-2 border border-rose-600 bg-rose-400 hover:bg-rose-500 hover:opacity-100 dark:bg-rose-700/50 dark:border-rose-900 dark:hover:bg-rose-700/80 dark:text-white"
+                            class="flex px-2 py-2 border bg-neutral-100 hover:bg-red-600 hover:text-black dark:bg-neutral-950 dark:hover:bg-red-700 dark:hover:text-white"
                             :class="{
-                              'opacity-100':
+                              'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950 text-neutral-900 dark:text-white':
                                 answers[question.id][index] === 'incorrect',
-                              'opacity-10':
+                              'text-neutral-600 dark:text-neutral-500 dark:border-neutral-950':
                                 answers[question.id][index] === 'correct',
-                              'opacity-15':
+                              'text-neutral-600 dark:text-neutral-400 dark:border-neutral-950':
                                 answers[question.id][index] === 'unanswered',
                             }"
                             @click.stop="
@@ -210,27 +219,30 @@
                         </div>
                         <!-- End Action Buttons -->
 
+                        <!-- Option letter -->
                         <div
                           class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 bg-gray-100 dark:text-neutral-200 dark:bg-neutral-950 border"
                           :class="{
-                            'bg-green-400 border-green-600 dark:bg-green-700/50 dark:border-green-800':
+                            'border-green-400 bg-green-500/80 dark:bg-green-800 dark:border-green-800':
                               answers[question.id][index] === 'correct',
-                            'bg-rose-400 border-rose-600 dark:bg-rose-700/50 dark:border-rose-800':
+                            'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950':
                               answers[question.id][index] === 'incorrect',
-                            'border-neutral-200 dark:border-neutral-900 dark:text-neutral-200':
+                            'border-neutral-200 dark:border-neutral-950 dark:text-neutral-200':
                               answers[question.id][index] === 'unanswered',
                           }"
                         >
                           {{ option.option }}.
                         </div>
+
+                        <!-- Option text -->
                         <div
                           class="w-full pl-3 pr-3 py-1.5 border"
                           :class="{
                             'border-green-200 bg-green-100 dark:border-green-500/10 dark:bg-green-400/10':
                               answers[question.id][index] === 'correct',
-                            'border-rose-200 bg-rose-100 dark:border-rose-500/10 dark:bg-rose-400/10':
+                            'border-red-200 bg-red-100 dark:border-red-500/10 dark:bg-red-400/10':
                               answers[question.id][index] === 'incorrect',
-                            'border-neutral-100 dark:border-neutral-900':
+                            'border-neutral-100 dark:border-neutral-950':
                               answers[question.id][index] === 'unanswered',
                           }"
                         >
@@ -268,7 +280,7 @@
                   question.options[answers[question.id].indexOf('correct')]
                     .option === correctAnswers[question.id - 1].toString()
                     ? 'text-green-500'
-                    : 'text-rose-500'
+                    : 'text-red-500'
                 "
               >
                 {{ correctAnswers[question.id - 1] }}
@@ -450,15 +462,26 @@ const handleAnswer = (
 ) => {
   if (quizState.value !== 'solving') return;
 
+  // Retrieve the current answers for the given question
   const currentAnswers = answers.value[questionId];
-  const newAnswers = [...currentAnswers];
+  const updatedAnswers = [...currentAnswers];
+
+  const originalState = updatedAnswers[optionIndex];
+
+  // If the new state is 'correct', mark all options as 'incorrect'
   if (newState === 'correct') {
-    // Mark other options as incorrect when choosing a new answer
-    newAnswers.fill('incorrect');
+    updatedAnswers.fill('incorrect');
   }
-  newAnswers[optionIndex] =
-    newAnswers[optionIndex] === newState ? 'unanswered' : newState;
-  answers.value[questionId] = newAnswers;
+
+  // Determine the new state for the selected option
+  if (originalState === newState) {
+    updatedAnswers[optionIndex] = 'unanswered';
+  } else {
+    updatedAnswers[optionIndex] = newState;
+  }
+
+  // Update the answers with the new states
+  answers.value[questionId] = updatedAnswers;
 };
 
 const submitQuiz = () => {
