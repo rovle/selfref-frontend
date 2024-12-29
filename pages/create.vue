@@ -140,7 +140,7 @@
                     type="checkbox"
                     :checked="wrongOptionsHidden"
                     @change="toggleWrongOptions()"
-                    class="appearance-none w-4 h-4 text-red-600 bg-white rounded border-neutral-300 checked:bg-red-500 hover:checked:bg-red-600 dark:checked:bg-red-600 dark:hover:checked:bg-red-700 bg-neutral-200 dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
+                    class="appearance-none w-4 h-4 text-red-600 rounded border-neutral-300 checked:bg-red-500 hover:checked:bg-red-600 dark:checked:bg-red-600 dark:hover:checked:bg-red-700 bg-neutral-200 dark:bg-neutral-800 dark:border-neutral-600 cursor-pointer"
                   />
                   <Icon
                     v-if="wrongOptionsHidden"
