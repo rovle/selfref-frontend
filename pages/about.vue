@@ -53,7 +53,7 @@
         <div class="flex justify-center pt-8">
           <NuxtLink
             to="/create"
-            class="bg-black dark:bg-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
+            class="bg-neutral-900 dark:bg-black dark:bg-white text-gray-100 dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
           >
             Try it out
           </NuxtLink>
