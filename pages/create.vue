@@ -3,7 +3,7 @@
     <AppNavbar />
     <div class="sm:px-4 pt-6 sm:pt-10 md:pt-12">
       <div
-        class="mx-auto max-w-4xl border-black/10 sm:border dark:border-white/20 text-black dark:text-white"
+        class="mx-auto max-w-4xl xl:max-w-6xl 2xl:max-w-7xl border-black/10 sm:border dark:border-white/20 text-black dark:text-white"
       >
         <div class="p-6 border-b dark:border-white/20">
           <h2 class="mb-2 md:text-2xl text-xl font-bold">{{ cardTitle }}</h2>
@@ -12,7 +12,7 @@
           </p>
         </div>
 
-        <div class="space-y-6 p-6">
+        <div class="space-y-4 p-6">
           <!-- Setup -->
           <div v-if="quizState === 'setup'" class="space-y-4">
             <div class="flex gap-4 pb-2">
@@ -60,10 +60,10 @@
                   :key="mode.value"
                   @click="difficultyLevel = mode.value"
                   :class="[
-                    'px-2 py-2 rounded-sm focus:outline-none ',
+                    'px-2 py-2 rounded-sm focus:outline-none',
                     difficultyLevel === mode.value
                       ? 'bg-neutral-900 text-white dark:bg-white dark:text-black'
-                      : 'bg-neutral-200 text-black hover:bg-neutral-300 dark:bg-neutral-900 dark:text-white hover:bg-neutral-800',
+                      : 'bg-neutral-200 text-black hover:bg-neutral-400/50 dark:bg-neutral-900 dark:text-white hover:bg-neutral-800',
                   ]"
                 >
                   {{ mode.label }}
@@ -156,7 +156,7 @@
               </label>
             </div>
 
-            <div class="grid lg:grid-cols-2 grid-cols-1 gap-12">
+            <div class="quiz-grid gap-10">
               <div
                 v-for="question in questions"
                 :key="question.id"
@@ -164,12 +164,12 @@
                 class="space-y-4 flex flex-col"
               >
                 <!-- Question text -->
-                <h3 class="text-sm lg:text-base font-medium">
+                <h3 class="text-sm font-medium">
                   {{ question.id }}. {{ question.text }}
                 </h3>
 
                 <!-- Question options -->
-                <div class="flex flex-col gap-2 w-full md:w-9/12">
+                <div class="flex flex-col gap-2">
                   <div
                     v-for="(option, index) in question.options"
                     :key="index"
@@ -199,7 +199,7 @@
                             :class="{
                               'border-green-400 bg-green-500/80 dark:bg-green-700 dark:border-green-800 dark:text-white':
                                 answers[question.id][index] === 'correct',
-                              'text-neutral-600 dark:bg-neutral-950 dark:text-neutral-500 dark:border-neutral-950':
+                              'text-neutral-600 bg-neutral-100 dark:bg-neutral-950 dark:text-neutral-500 dark:border-neutral-950':
                                 answers[question.id][index] === 'incorrect',
                               'text-neutral-600 bg-neutral-100 dark:bg-neutral-950 dark:text-neutral-400 dark:border-neutral-950':
                                 answers[question.id][index] === 'unanswered',
@@ -272,7 +272,7 @@
 
           <!-- Results -->
           <div v-if="quizState === 'results'" class="text-center pt-6">
-            <h3 class="text-xl font-bold mb-4">
+            <h3 class="font-bold mb-4">
               Number of correct answers: {{ score }} / {{ questions.length }}
             </h3>
             <p>
@@ -285,7 +285,7 @@
               </span>
               Here are the correct answers for each question, in order:
             </p>
-            <div class="mt-5 text-xl font-bold">
+            <div class="mt-4 text-xl font-bold">
               <span
                 v-for="(question, idx) in questions"
                 :key="question.id"
@@ -303,7 +303,7 @@
           </div>
         </div>
 
-        <div class="mt-6 px-6 pb-6">
+        <div class="mt-3 px-6 pb-6">
           <button
             v-if="quizState === 'setup'"
             @click="generateQuiz"
@@ -317,7 +317,7 @@
                 @click="goBack"
                 class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium uppercase text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90"
               >
-                <ArrowLeft class="w-4 h-4 mr-2" />
+                <Icon name="mdi:arrow-left" class="w-4 h-4 mr-2" />
                 Go Back
               </button>
               <button
@@ -355,7 +355,6 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowLeft } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import AppNavbar from './layout/AppNavbar.vue';
 
@@ -441,18 +440,15 @@ const generateQuiz = async () => {
       numQuestions = answerList.value.length;
     }
 
-    const response = await fetch(
-      'https://representing-makes-premises-bomb.trycloudflare.com/quizzes',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          num_questions: numQuestions,
-          answer_list: answerList.value,
-          answer_up_to_letter: answerUpTo,
-        }),
-      }
-    );
+    const response = await fetch('http://localhost:8000/quizzes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        num_questions: numQuestions,
+        answer_list: answerList.value,
+        answer_up_to_letter: answerUpTo,
+      }),
+    });
     const data = await response.json();
     console.log(data);
     questions.value = data.quiz;
@@ -559,5 +555,10 @@ const cardDescription = computed(() =>
 <style>
 .hide-incorrect .incorrect-option-container {
   display: none;
+}
+
+.quiz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 }
 </style>

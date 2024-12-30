@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-white dark:bg-black relative">
     <AppNavbar />
 
-    <ul class="ouroboros">
+    <ul v-if="$device.isDesktop" class="ouroboros">
       <li v-for="n in 48" :key="n"></li>
     </ul>
 
