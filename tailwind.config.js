@@ -4,12 +4,12 @@
  ** Docs: https://tailwindcss.com/docs/configuration
  ** Default: https://github.com/tailwindcss/tailwindcss/blob/master/stubs/defaultConfig.stub.js
  */
- module.exports = {
+module.exports = {
   theme: {
     fontFamily: {
-      'sans': ['"Geist Mono"', 'monospace'],
-      'display': ['"Geist Mono"', 'monospace'],
-      'body': ['"Geist Mono"', 'monospace'],
-    }
-  }
-};
+      sans: ['"Geist Mono"', 'monospace'],
+      display: ['"Plus Jakarta Sans"', 'sans-serif'],
+      body: ['"Geist Mono"', 'monospace'],
+    },
+  },
+}

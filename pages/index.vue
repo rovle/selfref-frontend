@@ -1,64 +1,53 @@
 <template>
-  <div class="min-h-screen bg-white dark:bg-black relative">
-    <AppNavbar />
-
+  <div>
     <ul v-if="$device.isDesktop" class="ouroboros">
       <li v-for="n in 48" :key="n"></li>
     </ul>
 
-    <main
-      class="mx-auto flex max-w-screen-xl flex-col items-center justify-center px-4 pt-32"
-    >
-      <h1
-        class="mb-4 text-center text-4xl font-bold tracking-tight text-gray-800 dark:text-gray-100 z-50"
-      >
-        Self-Referential Quiz Builder
-      </h1>
-      <p
-        class="mb-8 max-w-2xl text-center text-gray-600 dark:text-gray-400 z-50"
-      >
-        Create, customize, and solve unique self-referential quizzes that
-        challenge your logical reasoning abilities.
-      </p>
-      <NuxtLink
-        to="/create"
-        aria-label="Start generating"
-        class="bg-green-500 hover:bg-green-600 text-black font-medium uppercase px-4 py-2 z-50"
-      >
-        Start creating
-      </NuxtLink>
-      <section class="mt-28 grid gap-12 p-6 border dark:border-white/20">
-        <div class="max-w-2xl space-y-6">
-          <h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            How it works
-          </h2>
-          <ul
-            class="list-inside list-disc space-y-2 text-gray-600 dark:text-gray-400"
+    <main class="mx-auto max-w-screen-xl px-4 sm:px-8 pt-32">
+      <div class="grid md:grid-cols-2 gap-20 items-center">
+        <div class="flex flex-col items-center md:items-start">
+          <h1
+            class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-gray-800 dark:text-gray-100 z-50 font-display"
           >
-            <li>
-              Start by choosing a difficulty level or creating a custom quiz.
-            </li>
-            <li>
-              Each question refers to the quiz itself, making it a meta-logical
-              challenge.
-            </li>
-            <li>
-              Click on the buttons to the left of each option to mark them as
-              correct or incorrect.
-            </li>
-            <li>
-              Each question has only one correct answer. Solve the quiz by
-              selecting the correct answer for each question.
-            </li>
-          </ul>
+            Build recursive logic puzzles in seconds
+          </h1>
+          <p
+            class="mb-8 text-center md:text-left text-black dark:text-white z-50"
+          >
+            Create, customize, and solve unique self-referential quizzes. Our
+            builder generates guaranteed-solvable quizzes for both human
+            enjoyment and AI evaluation.
+          </p>
+          <NuxtLink
+            to="/create"
+            aria-label="Start generating"
+            class="bg-green-500 hover:bg-green-600 text-black rounded-md font-medium px-4 py-2 z-50"
+          >
+            Start Creating
+          </NuxtLink>
         </div>
-      </section>
+        <div>
+          <img
+            src="/images/iPad-PRO-11-self-referential-quiz-builder.png"
+            alt="Quiz builder interface"
+            class="w-full h-auto hidden dark:block"
+          />
+          <img
+            src="/images/iPad-PRO-11-self-referential-quiz-builder-light.png"
+            alt="Quiz builder interface"
+            class="w-full h-auto dark:hidden"
+          />
+        </div>
+      </div>
     </main>
   </div>
 </template>
 
 <script setup lang="ts">
-import AppNavbar from './layout/AppNavbar.vue';
+useHead({
+  title: 'Self-Referential Quiz Builder',
+})
 </script>
 
 <style scoped lang="scss">
@@ -74,8 +63,8 @@ ul.ouroboros {
   height: $dim;
   width: $dim;
   position: absolute;
-  top: 26%;
-  left: 50%;
+  top: 45%;
+  left: 30%;
   transform: translate(-50%, -50%);
   z-index: 0;
   opacity: 0.3;
