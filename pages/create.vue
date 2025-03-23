@@ -366,54 +366,66 @@
         leave-to-class="transform opacity-0"
       >
         <div v-if="showMessage" class="px-6 pb-3">
-          <div class="p-4 text-red-800 bg-red-50 border border-red-200 rounded-lg dark:text-red-400 dark:bg-red-950/50 dark:border-red-800" role="alert">
+          <div
+            class="p-4 text-red-800 bg-red-50 border border-red-200 rounded-lg dark:text-red-400 dark:bg-red-950/50 dark:border-red-800"
+            role="alert"
+          >
             {{ message }}
           </div>
         </div>
       </transition>
 
-      <div class="flex gap-3 mt-3 px-6 pb-6">
-        <button
-          @click="goBack"
-          v-if="quizState === 'setup'"
-          class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-        >
-          <Icon name="mdi:arrow-left" class="w-4 h-4 mr-2" />
-          Go Back
-        </button>
-        <button
-          v-if="quizState === 'typeSelection'"
-          @click="setupQuiz"
-          class="bg-green-500 hover:bg-green-600 text-black font-medium px-4 py-2 rounded-md"
-        >
-          Next
-        </button>
-        <button
-          v-if="quizState === 'setup'"
-          @click="generateQuiz"
-          class="bg-green-500 hover:bg-green-600 text-black font-medium px-4 py-2 rounded-md"
-        >
-          Generate Quiz
-        </button>
-        <div
-          v-else-if="quizState === 'solving'"
-          class="flex justify-between gap-3"
-        >
-          <div class="flex gap-3">
-            <button
-              @click="goBack"
-              class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-            >
-              <Icon name="mdi:arrow-left" class="w-4 h-4 mr-2" />
-              Go Back
-            </button>
-            <button
-              @click="resetQuiz"
-              class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-            >
-              Reset
-            </button>
-          </div>
+      <div class="flex justify-between gap-3 mt-3 px-6 pb-6">
+        <div>
+          <button
+            @click="goBack"
+            v-if="quizState === 'setup'"
+            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+          >
+            <Icon name="mdi:arrow-left" class="w-4 h-4 mr-2" />
+            Go Back
+          </button>
+        </div>
+
+        <div>
+          <button
+            v-if="quizState === 'typeSelection'"
+            @click="setupQuiz"
+            class="flex items-center bg-green-500 hover:bg-green-600 text-black font-medium px-4 py-2 rounded-md"
+          >
+            Next
+            <Icon name="mdi:arrow-right" class="w-4 h-4 ml-2" />
+          </button>
+          <button
+            v-if="quizState === 'setup'"
+            @click="generateQuiz"
+            class="bg-green-500 hover:bg-green-600 text-black font-medium px-4 py-2 rounded-md"
+          >
+            Generate Quiz
+          </button>
+        </div>
+      </div>
+
+      <div
+        v-if="quizState === 'solving'"
+        class="flex justify-between gap-3 mt-3 px-6 pb-6"
+      >
+        <div class="flex gap-3">
+          <button
+            @click="goBack"
+            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+          >
+            <Icon name="mdi:arrow-left" class="w-4 h-4 mr-2" />
+            Go Back
+          </button>
+          <button
+            @click="resetQuiz"
+            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+          >
+            Reset
+          </button>
+        </div>
+        <div class="flex">
           <button
             @click="submitQuiz"
             class="bg-green-500 hover:bg-green-600 text-black font-medium text-sm px-4 py-2 rounded-md"
@@ -421,20 +433,24 @@
             Submit
           </button>
         </div>
-        <div v-else-if="quizState === 'results'" class="flex gap-4">
-          <button
-            @click="goBack"
-            class="bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-          >
-            Try Another Quiz
-          </button>
-          <button
-            @click="resetQuiz"
-            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-          >
-            Reset quiz
-          </button>
-        </div>
+      </div>
+
+      <div
+        v-if="quizState === 'results'"
+        class="flex justify-end gap-3 mt-3 px-6 pb-6"
+      >
+        <button
+          @click="goBack"
+          class="bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+        >
+          Try Another Quiz
+        </button>
+        <button
+          @click="resetQuiz"
+          class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+        >
+          Reset quiz
+        </button>
       </div>
     </div>
   </div>
@@ -593,7 +609,9 @@ const submitQuiz = () => {
   )
 
   if (unansweredQuestions.length > 0) {
-    message.value = `Please answer ${unansweredQuestions.length === 1 ? 'question' : 'questions'} ${unansweredQuestions.map(q => q.id).join(', ')} before submitting.`
+    message.value = `Please answer ${
+      unansweredQuestions.length === 1 ? 'question' : 'questions'
+    } ${unansweredQuestions.map((q) => q.id).join(', ')} before submitting.`
     showMessage.value = true
     setTimeout(() => {
       showMessage.value = false
