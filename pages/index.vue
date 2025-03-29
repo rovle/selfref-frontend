@@ -1,8 +1,8 @@
 <template>
   <main
-    class="mx-auto max-w-screen-xl px-4 sm:px-8 pt-20 md:min-h-[calc(100vh-4rem)] md:flex md:items-center md:-mt-20"
+    class="mx-auto max-w-screen-xl px-4 sm:px-8 pt-16 pb-8 md:py-0 md:min-h-[calc(100vh-4rem)] md:flex md:items-center md:-mt-20 overflow-x-hidden"
   >
-    <div class="grid md:grid-cols-2 gap-14 items-center">
+    <div class="grid md:grid-cols-2 gap-10 md:gap-14 items-center">
       <div class="flex flex-col items-center md:items-start relative">
         <ul class="ouroboros absolute">
           <li v-for="n in $device.isDesktop ? 24 : 12" :key="n"></li>
@@ -69,8 +69,9 @@ ul.ouroboros {
   padding: 0;
   list-style: none;
   display: block;
-  height: $dim;
-  width: $dim;
+  --dim: min(300px, 80vw);
+  height: var(--dim);
+  width: var(--dim);
   position: absolute;
   top: 60%;
   left: 50%;
@@ -78,8 +79,10 @@ ul.ouroboros {
   z-index: 0;
   opacity: 0.3;
   will-change: transform;
+  pointer-events: none;
 
   @media (min-width: 768px) {
+    --dim: 300px;
     left: 40%;
     top: 50%;
   }
