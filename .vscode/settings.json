@@ -1,3 +1,6 @@
 {
-    "DockerRun.DisableAutoGenerateConfig": true
+    "DockerRun.DisableAutoGenerateConfig": true,
+    "conventionalCommits.scopes": [
+        "UI"
+    ]
 }

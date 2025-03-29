@@ -1,12 +1,11 @@
 <template>
   <div>
-    <ul v-if="$device.isDesktop" class="ouroboros">
-      <li v-for="n in 48" :key="n"></li>
-    </ul>
-
     <main class="mx-auto max-w-screen-xl px-4 sm:px-8 pt-32">
-      <div class="grid md:grid-cols-2 gap-20 items-center">
-        <div class="flex flex-col items-center md:items-start">
+      <div class="grid md:grid-cols-2 gap-14 items-center">
+        <div class="flex flex-col items-center md:items-start relative">
+          <ul v-if="$device.isDesktop" class="ouroboros absolute">
+            <li v-for="n in 48" :key="n"></li>
+          </ul>
           <h1
             class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-gray-800 dark:text-gray-100 z-50 font-display"
           >
@@ -19,22 +18,32 @@
             builder generates guaranteed-solvable quizzes for both human
             enjoyment and AI evaluation.
           </p>
-          <NuxtLink
-            to="/create"
-            aria-label="Start generating"
-            class="bg-green-500 hover:bg-green-600 text-black rounded-md font-medium px-4 py-2 z-50"
-          >
-            Start Creating
-          </NuxtLink>
+          <div class="flex gap-4 z-50">
+            <NuxtLink
+              to="/create"
+              aria-label="Start generating"
+              class="bg-green-500 hover:bg-green-600 text-black rounded-md font-medium px-4 py-2"
+            >
+              Start Creating
+            </NuxtLink>
+            <NuxtLink
+              to="/about"
+              aria-label="Learn more"
+              class="bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 dark:text-neutral-200 border-2 border-neutral-700 dark:border-neutral-400 rounded-md font-medium px-4 py-2"
+            >
+              Learn more
+            </NuxtLink>
+          </div>
         </div>
-        <div>
-          <img
-            src="/images/iPad-PRO-11-self-referential-quiz-builder.png"
+
+        <div class="shadow-md shadow-neutral-400/70 dark:shadow-neutral-950/80">
+          <NuxtImg
+            src="/images/self-referential-quiz-builder-dark.png"
             alt="Quiz builder interface"
             class="w-full h-auto hidden dark:block"
           />
-          <img
-            src="/images/iPad-PRO-11-self-referential-quiz-builder-light.png"
+          <NuxtImg
+            src="/images/self-referential-quiz-builder-light.png"
             alt="Quiz builder interface"
             class="w-full h-auto dark:hidden"
           />
@@ -53,7 +62,7 @@ useHead({
 <style scoped lang="scss">
 @use 'sass:math';
 
-$dim: 240px;
+$dim: 300px;
 
 ul.ouroboros {
   margin: 0;
@@ -63,11 +72,16 @@ ul.ouroboros {
   height: $dim;
   width: $dim;
   position: absolute;
-  top: 45%;
-  left: 30%;
+  top: 40%;
+  left: 50%;
   transform: translate(-50%, -50%);
   z-index: 0;
-  opacity: 0.3;
+  opacity: 0.25;
+
+  @media (min-width: 768px) {
+    left: 40%;
+    top: 50%;
+  }
 }
 
 .ouroboros li {

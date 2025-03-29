@@ -1,8 +1,8 @@
 <template>
-  <div class="min-h-screen py-8 bg-neutral-100 dark:bg-neutral-900 relative">
+  <div class="min-h-screen py-8 bg-neutral-100 dark:bg-neutral-900">
     <AppNavbar />
 
-    <div class="mt-10 slot-container">
+    <div class="mt-10">
       <slot />
     </div>
 
@@ -13,9 +13,3 @@
 <script setup lang="ts">
 import AppNavbar from '../components/AppNavbar.vue'
 </script>
-
-<style scoped>
-.slot-container {
-  contain: paint;
-}
-</style>

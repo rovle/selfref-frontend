@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@nuxt/icon',
     '@nuxtjs/device',
+    '@nuxt/image',
   ],
   app: {
     head: {
@@ -30,6 +31,10 @@ export default defineNuxtConfig({
     fallback: 'dark', // fallback value if not system preference found
     storage: 'localStorage', // or 'sessionStorage' or 'cookie'
     storageKey: 'nuxt-color-mode',
+  },
+
+  image: {
+    quality: 90,
   },
 
   vite: {

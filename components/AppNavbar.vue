@@ -1,6 +1,6 @@
 <template>
   <header
-    class="fixed top-0 w-full bg-neutral-100 dark:bg-neutral-900 dark:text-white z-50"
+    class="absolute top-0 w-full bg-neutral-100 dark:bg-neutral-900 dark:text-white z-50"
   >
     <div class="flex justify-center px-4 pt-6 sm:hidden">
       <NuxtLink to="/" aria-label="Home" class="font-bold">
