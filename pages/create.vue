@@ -23,12 +23,12 @@
               <section>
                 <div class="max-w-lg space-y-6">
                   <h2
-                    class="text-xl font-bold text-gray-800 dark:text-gray-100"
+                    class="text-xl font-bold text-neutral-900 dark:text-neutral-100"
                   >
                     How it works
                   </h2>
                   <ul
-                    class="list-inside list-disc space-y-2 text-neutral-800 dark:text-neutral-200 text-sm"
+                    class="list-inside list-disc space-y-2 text-neutral-900 dark:text-neutral-100 text-sm"
                   >
                     <li>
                       Start by choosing how you want to create your quiz: pick a
@@ -53,7 +53,7 @@
 
               <div>
                 <h3
-                  class="mb-5 text-lg font-medium text-gray-900 dark:text-white"
+                  class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
                 >
                   Choose a generation type
                 </h3>
@@ -99,7 +99,7 @@
           <div v-if="quizState === 'setup'">
             <div v-if="generationType === 'difficulty'">
               <h3
-                class="mb-5 text-lg font-medium text-gray-900 dark:text-white"
+                class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
               >
                 Difficulty Level
               </h3>
@@ -119,7 +119,7 @@
 
             <div v-if="generationType === 'custom'">
               <h3
-                class="mb-5 text-lg font-medium text-gray-900 dark:text-white"
+                class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
               >
                 Custom Quiz
               </h3>
@@ -156,7 +156,7 @@
 
             <div v-if="generationType === 'answerList'">
               <h3
-                class="mb-5 text-lg font-medium text-gray-900 dark:text-white"
+                class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
               >
                 Answer List
               </h3>
@@ -290,7 +290,7 @@
 
                       <!-- Option letter -->
                       <div
-                        class="font-semibold text-gray-900 pl-3 pr-2 py-1.5 dark:text-neutral-200 border"
+                        class="font-semibold text-neutral-900 pl-3 pr-2 py-1.5 dark:text-neutral-200 border"
                         :class="{
                           'border-green-400 bg-green-500/80 dark:bg-green-700 dark:border-green-800':
                             answers[question.id][index] === 'correct',
@@ -460,6 +460,9 @@
 import { computed, ref } from 'vue'
 import RadioCardCompact from '~/components/RadioCardCompact.vue'
 
+const config = useRuntimeConfig()
+const apiUrl = config.public.apiUrl
+
 type Question = {
   id: number
   text: string
@@ -542,7 +545,7 @@ const generateQuiz = async () => {
       numQuestions = answerList.value.length
     }
 
-    const response = await fetch('http://localhost:8000/quizzes', {
+    const response = await fetch(`${apiUrl}/quizzes`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

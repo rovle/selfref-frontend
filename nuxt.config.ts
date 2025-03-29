@@ -1,6 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2024-04-03',
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:8000',
+    },
+  },
+  compatibilityDate: '2025-03-29',
   devtools: { enabled: true },
   modules: [
     '@nuxtjs/tailwindcss',
@@ -11,6 +16,15 @@ export default defineNuxtConfig({
   ],
   app: {
     head: {
+      title: 'Self-Referential Quiz Builder',
+      meta: [
+        { charset: 'utf-8' },
+        { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+        {
+          name: 'description',
+          content: 'Create, customize, and solve self-referential quizzes.',
+        },
+      ],
       link: [
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
@@ -23,6 +37,22 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap',
         },
       ],
+    },
+  },
+
+  icon: {
+    clientBundle: {
+      // list of icons to include in the client bundle
+      icons: [
+        'mdi:github',
+        'mdi:white-balance-sunny',
+        'material-symbols-light:dark-mode-rounded',
+        'mdi:check',
+        'mdi:close',
+        'mdi:arrow-left',
+        'mdi:arrow-right',
+      ],
+      scan: true,
     },
   },
 

@@ -7,7 +7,7 @@
             <li v-for="n in 48" :key="n"></li>
           </ul>
           <h1
-            class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-gray-800 dark:text-gray-100 z-50 font-display"
+            class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display"
           >
             Build recursive logic puzzles in seconds
           </h1>

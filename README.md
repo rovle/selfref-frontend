@@ -28,6 +28,9 @@ Start the development server on `http://localhost:3000`:
 
 ```bash
 npm run dev
+
+# or set host to expose to the network
+npx nuxi dev --host 0.0.0.0
 ```
 
 ## Production

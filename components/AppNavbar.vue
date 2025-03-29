@@ -39,7 +39,7 @@
             to="https://github.com/rovle/self-referential-quizzes"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-center p-1 transition-colors focus:outline-none rounded-md hover:bg-black/5 hover:dark:bg-white/5"
+            class="flex items-center justify-center p-1 transition-colors focus:outline-none rounded-md hover:bg-black/5 hover:dark:bg-white/5 text-neutral-800 dark:text-neutral-100"
           >
             <Icon name="mdi:github" class="h-7 w-7" />
           </NuxtLink>
@@ -49,12 +49,12 @@
             aria-label="Toggle color mode"
           >
             <!-- Sun icon for light mode -->
-            <span v-if="$colorMode.value === 'light'" class="text-gray-700">
+            <span v-if="$colorMode.value === 'light'" class="text-neutral-800">
               <Icon name="mdi:white-balance-sunny" class="h-7 w-7" />
             </span>
 
             <!-- Moon icon for dark mode -->
-            <span v-else class="text-gray-200">
+            <span v-else class="text-neutral-200">
               <Icon
                 name="material-symbols-light:dark-mode-rounded"
                 class="h-7 w-7"
