@@ -4,8 +4,8 @@
   >
     <div class="grid md:grid-cols-2 gap-14 items-center">
       <div class="flex flex-col items-center md:items-start relative">
-        <ul v-if="$device.isDesktop" class="ouroboros absolute">
-          <li v-for="n in 48" :key="n"></li>
+        <ul class="ouroboros absolute">
+          <li v-for="n in $device.isDesktop ? 24 : 12" :key="n"></li>
         </ul>
         <h1
           class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display"
@@ -76,7 +76,8 @@ ul.ouroboros {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 0;
-  opacity: 0.25;
+  opacity: 0.3;
+  will-change: transform;
 
   @media (min-width: 768px) {
     left: 40%;
@@ -91,35 +92,32 @@ ul.ouroboros {
   border-right: 1px solid #808080;
   border-radius: math.div($dim, 4);
   opacity: 0.5;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
 }
 
-@for $i from 1 through 48 {
+@for $i from 1 through 24 {
   .ouroboros li:nth-child(#{$i}) {
-    transform: rotate(#{$i * 7.5}deg);
-    animation: fade 2s math.div($i, 24) * 1s infinite linear;
+    transform: rotate(#{$i * 15}deg) translateZ(0);
+    animation: fade 3s math.div($i, 12) * 1s infinite ease-in-out;
   }
 }
 
 @keyframes fade {
-  0% {
+  0%,
+  100% {
     opacity: 0;
-    border-color: #696969;
+    border-color: #525252; // neutral-600
   }
-  25% {
+  25%,
+  75% {
     opacity: 0.2;
-    border-color: #777777;
+    border-color: #6b7280; // neutral-500
   }
   50% {
     opacity: 1;
-    border-color: #00dd5c;
-  }
-  75% {
-    opacity: 0.2;
-    border-color: #777;
-  }
-  100% {
-    opacity: 0;
-    border-color: #696969;
+    border-color: #22c55e; // green-500
   }
 }
 </style>

@@ -5,8 +5,6 @@
     <div class="mt-10">
       <slot />
     </div>
-
-    <div class="flex-grow-1"></div>
   </div>
 </template>
 
