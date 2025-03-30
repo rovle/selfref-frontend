@@ -1,22 +1,24 @@
 <template>
   <main
-    class="mx-auto max-w-screen-2xl px-4 sm:px-8 pt-16 pb-8 md:py-0 md:min-h-[calc(100vh-4rem)] md:flex items-center md:-mt-20 overflow-x-hidden"
+    class="mx-auto max-w-screen-2xl px-4 sm:px-8 pt-20 pb-8 lg:min-h-screen lg:flex lg:items-center lg:-mt-20 overflow-x-hidden"
   >
-    <div class="grid md:grid-cols-2 gap-10 items-center">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-7 gap-8 lg:gap-12 items-center justify-items-center lg:justify-items-start"
+    >
       <div
-        class="flex flex-col items-center md:items-start relative md:max-w-lg"
+        class="flex flex-col items-center lg:items-start relative w-full md:w-auto md:max-w-2xl lg:max-w-lg lg:col-span-3"
       >
         <ul class="ouroboros absolute">
           <li v-for="n in $device.isDesktop ? 24 : 12" :key="n"></li>
         </ul>
         <h1
-          class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display"
+          class="mb-8 text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display"
         >
           Build Custom
           <span class="block">Self-Referential Quizzes in Seconds</span>
         </h1>
         <p
-          class="mb-8 text-center md:text-left text-black dark:text-white z-50"
+          class="mb-8 text-center lg:text-left text-black dark:text-white z-50"
         >
           Create, customize, and solve guaranteed-solvable logic tests, perfect
           for human enjoyment or evaluating AI reasoning capabilities.
@@ -39,16 +41,24 @@
         </div>
       </div>
 
-      <div class="shadow-md shadow-neutral-400/70 dark:shadow-neutral-950/80">
+      <div
+        class="shadow-md shadow-neutral-400/70 dark:shadow-neutral-950/80 lg:col-span-4 w-full"
+      >
         <NuxtImg
           src="/images/self-referential-quiz-builder-dark.png"
           alt="Quiz builder interface"
           class="w-full h-auto hidden dark:block"
+          loading="eager"
+          width="1280"
+          height="847"
         />
         <NuxtImg
           src="/images/self-referential-quiz-builder-light.png"
           alt="Quiz builder interface"
           class="w-full h-auto dark:hidden"
+          loading="eager"
+          width="1280"
+          height="847"
         />
       </div>
     </div>
