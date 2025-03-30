@@ -12,14 +12,14 @@
         <h1
           class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display"
         >
-          Generate
+          Build Custom
           <span class="block">Self-Referential Quizzes in Seconds</span>
         </h1>
         <p
           class="mb-8 text-center md:text-left text-black dark:text-white z-50"
         >
-          Create, customize, and solve guaranteed-solvable quizzes, perfect for
-          human enjoyment or evaluating AI reasoning capabilities.
+          Create, customize, and solve guaranteed-solvable logic tests, perfect
+          for human enjoyment or evaluating AI reasoning capabilities.
         </p>
         <div class="flex gap-4 z-50">
           <NuxtLink
