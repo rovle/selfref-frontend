@@ -36,16 +36,31 @@
                       answer list.
                     </li>
                     <li>
-                      Each question refers to the quiz itself, making it a
-                      meta-logical challenge.
+                      Remember, in self-referential quizzes, each question
+                      relates to the quiz itself, including its structure,
+                      content, and answers. Think recursively!
                     </li>
                     <li>
-                      Click on the buttons to the left of each option to mark
-                      them as correct or incorrect.
+                      Use the
+                      <span
+                        class="inline-flex border border-green-400 bg-green-500/80 dark:bg-green-700 dark:border-green-800 dark:text-white p-0.5"
+                      >
+                        <Icon name="mdi:check" size="14" />
+                      </span>
+                      or
+                      <span
+                        class="inline-flex border border-red-400 bg-red-500/80 dark:bg-red-600/50 dark:border-red-950 text-neutral-900 dark:text-white p-0.5"
+                      >
+                        <Icon name="mdi:close" size="14" />
+                      </span>
+                      buttons next to each option to mark them as correct or
+                      incorrect. This helps you keep track of your answers and
+                      narrow down the possible solutions as you work through the
+                      quiz.
                     </li>
                     <li>
-                      Each question has only one correct answer. Solve the quiz
-                      by selecting the correct answer for each question.
+                      Each question has exactly one correct answer. To solve the
+                      quiz, select the correct option for every question.
                     </li>
                   </ul>
                 </div>
