@@ -25,7 +25,7 @@
                   <h2
                     class="text-xl font-bold text-neutral-900 dark:text-neutral-100"
                   >
-                    How it works
+                    Quick Guide
                   </h2>
                   <ul
                     class="list-inside list-disc space-y-2 text-neutral-900 dark:text-neutral-100 text-sm"
@@ -687,7 +687,7 @@ const cardDescription = computed(() => {
     case 'setup':
       return 'Choose your quiz parameters'
     case 'solving':
-      return 'Select the correct answers and mark wrong options'
+      return 'Select the correct answer for each question'
     case 'results':
       return 'See how well you did!'
     default:

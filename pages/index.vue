@@ -1,23 +1,25 @@
 <template>
   <main
-    class="mx-auto max-w-screen-xl px-4 sm:px-8 pt-16 pb-8 md:py-0 md:min-h-[calc(100vh-4rem)] md:flex md:items-center md:-mt-20 overflow-x-hidden"
+    class="mx-auto max-w-screen-2xl px-4 sm:px-8 pt-16 pb-8 md:py-0 md:min-h-[calc(100vh-4rem)] md:flex items-center md:-mt-20 overflow-x-hidden"
   >
-    <div class="grid md:grid-cols-2 gap-10 md:gap-14 items-center">
-      <div class="flex flex-col items-center md:items-start relative">
+    <div class="grid md:grid-cols-2 gap-10 items-center">
+      <div
+        class="flex flex-col items-center md:items-start relative md:max-w-lg"
+      >
         <ul class="ouroboros absolute">
           <li v-for="n in $device.isDesktop ? 24 : 12" :key="n"></li>
         </ul>
         <h1
           class="mb-8 text-center md:text-left text-3xl sm:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display"
         >
-          Build recursive logic puzzles in seconds
+          Generate
+          <span class="block">Self-Referential Quizzes in Seconds</span>
         </h1>
         <p
           class="mb-8 text-center md:text-left text-black dark:text-white z-50"
         >
-          Create, customize, and solve unique self-referential quizzes. Our
-          builder generates guaranteed-solvable quizzes for both human enjoyment
-          and AI evaluation.
+          Create, customize, and solve guaranteed-solvable quizzes, perfect for
+          human enjoyment or evaluating AI reasoning capabilities.
         </p>
         <div class="flex gap-4 z-50">
           <NuxtLink
@@ -83,8 +85,14 @@ ul.ouroboros {
 
   @media (min-width: 768px) {
     --dim: 300px;
-    left: 40%;
-    top: 50%;
+    left: 50%;
+    top: 30%;
+  }
+
+  @media (min-width: 640px) {
+    --dim: 300px;
+    left: 50%;
+    top: 35%;
   }
 }
 

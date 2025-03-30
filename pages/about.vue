@@ -9,16 +9,16 @@
 
       <div class="space-y-4 text-black dark:text-white">
         <p>
-          Self-referential quizzes are a fascinating type of logic puzzle that
-          challenge your ability to reason logically, think recursively, and
-          consider the quiz as a whole. Each question refers to the quiz itself,
-          making the puzzle a meta-logical challenge. These quizzes can be found
-          online, dating back to the early 1990s, with some containing as many
-          as 20 questions.
+          Self-referential quizzes are a fascinating type of logic puzzle, where
+          each question refers to the properties of the entire quiz, demanding
+          recursive thinking and a meta-logical approach to solve. They
+          challenge your ability to reason about a system while being part of
+          it.
         </p>
 
         <p>
-          Check out the
+          These captivating puzzles date back to the early 1990s, with some
+          containing as many as 20 questions. Check out the
           <NuxtLink
             to="https://faculty.uml.edu/jpropp/srat-Q.txt"
             class="underline underline-offset-4 hover:opacity-70"
@@ -36,15 +36,16 @@
           >
             Twenty Questions
           </NuxtLink>
-          by Don Woods for examples.
+          by Don Woods for well-known examples.
         </p>
 
         <p>
-          This project was created to serve as a benchmark for evaluating
-          advanced reasoning capabilities in large language models. This website
-          provides a user-friendly interface to interact with the quiz generator
-          and solver. It is optimized to create quizzes with hundreds of
-          questions in just seconds!
+          Our builder brings this concept into a powerful, modern tool. This
+          project was specifically created to serve as a benchmark for
+          evaluating advanced reasoning capabilities of large language models
+          (LLMs). The inherent recursion, meta-logic and scalability (e.g.
+          hundreds of questions) of self-referential quizzes make them ideal for
+          such a purpose.
         </p>
       </div>
 
