@@ -61,4 +61,8 @@
   </main>
 </template>
 
-<script setup></script>
+<script setup lang="ts">
+useSeoMeta({
+  title: 'About Self-Referential Quizzes Builder - History and Motivation'
+})
+</script>

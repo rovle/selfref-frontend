@@ -475,6 +475,10 @@
 import { computed, ref } from 'vue'
 import RadioCardCompact from '~/components/RadioCardCompact.vue'
 
+useSeoMeta({
+  title: 'Create Your Self-Referential Quiz - Quiz Builder'
+})
+
 const config = useRuntimeConfig()
 const apiUrl = config.public.apiUrl
 

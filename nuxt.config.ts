@@ -5,18 +5,27 @@ export default defineNuxtConfig({
       apiUrl: process.env.NUXT_PUBLIC_API_URL || 'http://localhost:8000',
     },
   },
+  site: {
+    url: 'https://selfreferentialquizbuilder.com',
+    name: 'Self-Referential Quiz Builder',
+  },
   compatibilityDate: '2025-03-29',
-  devtools: { enabled: false },
+  devtools: { enabled: true },
   modules: [
     '@nuxtjs/tailwindcss',
     '@nuxtjs/color-mode',
     '@nuxt/icon',
     '@nuxtjs/device',
     '@nuxt/image',
+    '@nuxtjs/sitemap',
+    '@nuxtjs/robots',
   ],
   app: {
     head: {
       title: 'Self-Referential Quiz Builder',
+      htmlAttrs: {
+        lang: 'en',
+      },
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -24,8 +33,58 @@ export default defineNuxtConfig({
           name: 'description',
           content: 'Create, customize, and solve self-referential quizzes.',
         },
+        {
+          name: 'keywords',
+          content:
+            'self-referential quiz, logic puzzle, quiz builder, AI evaluation, recursive thinking, meta-logic',
+        },
+        {
+          name: 'robots',
+          content: 'index, follow',
+        },
+        {
+          name: 'og:title',
+          content: 'Self-Referential Quiz Builder - Create Logic Puzzles',
+        },
+        {
+          name: 'og:description',
+          content: 'Create, customize, and solve self-referential quizzes.',
+        },
+        {
+          name: 'og:type',
+          content: 'website',
+        },
+        {
+          name: 'og:url',
+          content: 'https://selfreferentialquizbuilder.com', // Update with your actual domain
+        },
+        {
+          name: 'og:image',
+          content: '/images/self-referential-quiz-builder-dark.png',
+        },
+        {
+          name: 'twitter:card',
+          content: 'summary_large_image',
+        },
+        {
+          name: 'twitter:title',
+          content: 'Self-Referential Quiz Builder - Create Logic Puzzles',
+        },
+        {
+          name: 'twitter:description',
+          content: 'Create, customize, and solve self-referential quizzes.',
+        },
+        {
+          name: 'twitter:image',
+          content: '/images/self-referential-quiz-builder-dark.png',
+        },
       ],
       link: [
+        {
+          rel: 'icon',
+          type: 'image/x-icon',
+          href: '/favicon.ico',
+        },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com' },
         {

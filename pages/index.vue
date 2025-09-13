@@ -66,8 +66,17 @@
 </template>
 
 <script setup lang="ts">
-useHead({
+useSeoMeta({
   title: 'Self-Referential Quiz Builder',
+  description: 'Create, customize, and solve self-referential quizzes.',
+  ogTitle: 'Self-Referential Quiz Builder',
+  ogDescription: 'Create, customize, and solve self-referential quizzes.',
+  ogImage: '/images/self-referential-quiz-builder-dark.png',
+  ogUrl: 'https://selfreferentialquizbuilder.com',
+  twitterTitle: 'Self-Referential Quiz Builder',
+  twitterDescription: 'Create, customize, and solve self-referential quizzes.',
+  twitterImage: '/images/self-referential-quiz-builder-dark.png',
+  twitterCard: 'summary'
 })
 </script>
 
