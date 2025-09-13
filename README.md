@@ -19,7 +19,7 @@ This project is a Nuxt frontend for the self-referential quiz generation backend
 Make sure to install dependencies:
 
 ```bash
-npm install
+bun i
 ```
 
 ## Development Server
@@ -27,10 +27,10 @@ npm install
 Start the development server on `http://localhost:3000`:
 
 ```bash
-npm run dev
+bun --bun run dev
 
 # or set host to expose to the network
-npx nuxi dev --host 0.0.0.0
+bun --bun run dev --host 0.0.0.0
 ```
 
 ## Production
@@ -38,13 +38,13 @@ npx nuxi dev --host 0.0.0.0
 Build the application for production:
 
 ```bash
-npm run build
+bun --bun run build
 ```
 
 Locally preview production build:
 
 ```bash
-npm run preview
+bun --bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
