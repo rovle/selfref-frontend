@@ -6,7 +6,7 @@ export default defineNuxtConfig({
     },
   },
   site: {
-    url: 'https://selfreferentialquizbuilder.com',
+    url: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     name: 'Self-Referential Quiz Builder',
   },
   compatibilityDate: '2025-03-29',
@@ -56,7 +56,7 @@ export default defineNuxtConfig({
         },
         {
           name: 'og:url',
-          content: 'https://selfreferentialquizbuilder.com', // Update with your actual domain
+          content: process.env.NUXT_PUBLIC_SITE_URL || 'http://localhost:3000',
         },
         {
           name: 'og:image',

@@ -1,65 +1,39 @@
 <template>
   <main
-    class="mx-auto max-w-screen-2xl px-4 sm:px-8 pt-20 pb-8 lg:min-h-screen lg:flex lg:items-center lg:-mt-20 overflow-x-hidden"
-  >
+    class="mx-auto max-w-screen-2xl px-4 sm:px-8 pt-20 pb-8 lg:min-h-screen lg:flex lg:items-center lg:-mt-20 overflow-x-hidden">
     <div
-      class="grid grid-cols-1 lg:grid-cols-7 gap-8 lg:gap-12 items-center justify-items-center lg:justify-items-start"
-    >
+      class="grid grid-cols-1 lg:grid-cols-7 gap-8 lg:gap-12 items-center justify-items-center lg:justify-items-start">
       <div
-        class="flex flex-col items-center lg:items-start relative w-full md:w-auto md:max-w-2xl lg:max-w-lg lg:col-span-3"
-      >
+        class="flex flex-col items-center lg:items-start relative w-full md:w-auto md:max-w-2xl lg:max-w-lg lg:col-span-3">
         <ul class="ouroboros absolute">
           <li v-for="n in $device.isDesktop ? 24 : 12" :key="n"></li>
         </ul>
         <h1
-          class="mb-8 text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display"
-        >
+          class="mb-8 text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display">
           Build Custom
           <span class="block">Self-Referential Quizzes in Seconds</span>
         </h1>
-        <p
-          class="mb-8 text-center lg:text-left text-black dark:text-white z-50"
-        >
+        <p class="mb-8 text-center lg:text-left text-black dark:text-white z-50">
           Create, customize, and solve guaranteed-solvable logic tests, perfect
           for human enjoyment or evaluating AI reasoning capabilities.
         </p>
         <div class="flex gap-4 z-50">
-          <NuxtLink
-            to="/create"
-            aria-label="Start generating"
-            class="bg-green-500 hover:bg-green-600 text-black rounded-md font-medium px-4 py-2"
-          >
+          <NuxtLink to="/create" aria-label="Start generating"
+            class="bg-green-500 hover:bg-green-600 text-black rounded-md font-medium px-4 py-2">
             Start Creating
           </NuxtLink>
-          <NuxtLink
-            to="/about"
-            aria-label="Learn more"
-            class="bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 dark:text-neutral-200 border-2 border-neutral-700 dark:border-neutral-400 rounded-md font-medium px-4 py-2"
-          >
+          <NuxtLink to="/about" aria-label="Learn more"
+            class="bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 dark:text-neutral-200 border-2 border-neutral-700 dark:border-neutral-400 rounded-md font-medium px-4 py-2">
             Learn more
           </NuxtLink>
         </div>
       </div>
 
-      <div
-        class="shadow-md shadow-neutral-400/70 dark:shadow-neutral-950/80 lg:col-span-4 w-full"
-      >
-        <NuxtImg
-          src="/images/self-referential-quiz-builder-dark.png"
-          alt="Quiz builder interface"
-          class="w-full h-auto hidden dark:block"
-          loading="eager"
-          width="1280"
-          height="847"
-        />
-        <NuxtImg
-          src="/images/self-referential-quiz-builder-light.png"
-          alt="Quiz builder interface"
-          class="w-full h-auto dark:hidden"
-          loading="eager"
-          width="1280"
-          height="847"
-        />
+      <div class="shadow-md shadow-neutral-400/70 dark:shadow-neutral-950/80 lg:col-span-4 w-full">
+        <NuxtImg src="/images/self-referential-quiz-builder-dark.png" alt="Quiz builder interface"
+          class="w-full h-auto hidden dark:block" loading="eager" width="1280" height="847" />
+        <NuxtImg src="/images/self-referential-quiz-builder-light.png" alt="Quiz builder interface"
+          class="w-full h-auto dark:hidden" loading="eager" width="1280" height="847" />
       </div>
     </div>
   </main>
@@ -72,7 +46,6 @@ useSeoMeta({
   ogTitle: 'Self-Referential Quiz Builder',
   ogDescription: 'Create, customize, and solve self-referential quizzes.',
   ogImage: '/images/self-referential-quiz-builder-dark.png',
-  ogUrl: 'https://selfreferentialquizbuilder.com',
   twitterTitle: 'Self-Referential Quiz Builder',
   twitterDescription: 'Create, customize, and solve self-referential quizzes.',
   twitterImage: '/images/self-referential-quiz-builder-dark.png',
@@ -135,16 +108,19 @@ ul.ouroboros {
 }
 
 @keyframes fade {
+
   0%,
   100% {
     opacity: 0;
     border-color: #525252; // neutral-600
   }
+
   25%,
   75% {
     opacity: 0.2;
     border-color: #6b7280; // neutral-500
   }
+
   50% {
     opacity: 1;
     border-color: #22c55e; // green-500
