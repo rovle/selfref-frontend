@@ -1,7 +1,15 @@
 <template>
   <div class="sm:px-4 pt-10">
+    <!-- Save Quiz Modal -->
+    <SaveQuizModal
+      :show="showSaveModal"
+      :quiz-id="quizId"
+      :answers="answers"
+      :completed="allCorrect"
+      @close="showSaveModal = false"
+    />
     <div
-      class="mx-auto max-w-4xl xl:max-w-6xl 2xl:max-w-7xl border-black/10 sm:border dark:border-white/20 text-black dark:text-white rounded-md"
+      class="relative mx-auto max-w-4xl xl:max-w-6xl 2xl:max-w-7xl border-black/10 sm:border dark:border-white/20 text-black dark:text-white rounded-md"
     >
       <div class="p-6 border-b dark:border-white/20">
         <h2 class="mb-2 md:text-2xl text-xl font-display font-bold">
@@ -32,8 +40,7 @@
                   >
                     <li>
                       Start by choosing how you want to create your quiz: pick a
-                      difficulty level, customize it yourself, or provide an
-                      answer list.
+                      difficulty level or customize it yourself.
                     </li>
                     <li>
                       Remember, in self-referential quizzes, each question
@@ -95,17 +102,6 @@
                       @update:modelValue="(val: GenerationType) => (generationType = val)"
                     />
                   </li>
-                  <li>
-                    <RadioCard
-                      id="answerList"
-                      value="answerList"
-                      name="generationType"
-                      title="Answer List"
-                      description="Generate a quiz by providing its answer as a list."
-                      :model-value="generationType"
-                      @update:modelValue="(val: GenerationType) => (generationType = val)"
-                    />
-                  </li>
                 </ul>
               </div>
             </div>
@@ -132,62 +128,264 @@
               </div>
             </div>
 
-            <div v-if="generationType === 'custom'">
+            <div v-if="generationType === 'custom'" class="space-y-6">
               <h3
                 class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
               >
                 Custom Quiz
               </h3>
+
+              <!-- Basic Settings -->
               <div class="grid max-w-screen-md gap-4 sm:grid-cols-2">
                 <div>
                   <label
                     for="questionCount"
                     class="mb-2 inline-block text-sm font-semibold text-black dark:text-white sm:text-base"
-                    >Number of questions*</label
+                    >Number of questions: {{ numberOfQuestions }}</label
                   >
                   <input
                     id="questionCount"
-                    type="number"
-                    min="1"
-                    max="500"
+                    type="range"
+                    min="2"
+                    max="100"
                     v-model.number="numberOfQuestions"
-                    class="w-full rounded-md p-2 bg-white dark:bg-neutral-700 text-black dark:text-white border-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-800 dark:focus:border-neutral-200 focus:outline-none"
+                    class="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer"
                   />
+                  <div class="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                    <span>2</span>
+                    <span>25</span>
+                    <span>50</span>
+                    <span>75</span>
+                    <span>100</span>
+                  </div>
                 </div>
                 <div>
                   <label
                     for="answerUpToLetter"
                     class="mb-2 inline-block text-sm font-semibold text-black dark:text-white sm:text-base"
-                    >Answers can be up to letter*</label
+                    >Answers can be up to letter: {{ answerUpToLetter }}</label
                   >
                   <input
                     id="answerUpToLetter"
-                    v-model="answerUpToLetter"
-                    class="w-full rounded-md p-2 bg-white dark:bg-neutral-700 text-black dark:text-white border-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-800 dark:focus:border-neutral-200 focus:outline-none"
+                    type="range"
+                    min="1"
+                    max="13"
+                    v-model.number="answerUpToLetterIndex"
+                    class="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer"
                   />
+                  <div class="flex justify-between text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                    <span>B</span>
+                    <span>E</span>
+                    <span>H</span>
+                    <span>K</span>
+                    <span>N</span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div v-if="generationType === 'answerList'">
-              <h3
-                class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
-              >
-                Answer List
-              </h3>
-              <div class="grid max-w-screen-md gap-4 sm:grid-cols-2">
-                <div>
-                  <label
-                    for="answerList"
-                    class="mb-2 inline-block text-sm font-semibold text-black dark:text-white sm:text-base"
-                    >Quiz answer*</label
-                  >
-                  <input
-                    id="answerList"
-                    v-model="answerList"
-                    placeholder="e.g. ACBB"
-                    class="w-full rounded-md p-2 bg-white dark:bg-neutral-700 text-black dark:text-white border-2 border-neutral-200 dark:border-neutral-700 focus:border-neutral-800 dark:focus:border-neutral-200 focus:outline-none"
+              <!-- Question Types Section (Expandable) -->
+              <div class="border border-neutral-200 dark:border-neutral-700 rounded-md">
+                <button
+                  @click="questionTypesExpanded = !questionTypesExpanded"
+                  class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                >
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                      Question Types Configuration
+                    </span>
+                    <span v-if="enabledQuestionCount > 0" class="px-2 py-0.5 text-xs bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 rounded-full">
+                      {{ enabledQuestionCount }} enabled
+                    </span>
+                  </div>
+                  <Icon
+                    :name="questionTypesExpanded ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                    size="20"
+                    class="text-neutral-500 dark:text-neutral-400"
                   />
+                </button>
+                <div v-if="questionTypesExpanded" class="p-4 border-t border-neutral-200 dark:border-neutral-700">
+                  <div v-if="!quizConfigLoaded" class="text-center py-8">
+                    <p class="text-neutral-500 dark:text-neutral-400">Loading question types...</p>
+                  </div>
+                  <div v-else class="space-y-4">
+                    <!-- Controls -->
+                    <div class="flex flex-wrap gap-2 mb-4">
+                      <button
+                        @click="quizConfig.enableAll()"
+                        class="px-3 py-1 text-sm bg-green-500 hover:bg-green-600 text-black rounded-md"
+                      >
+                        Enable All
+                      </button>
+                      <button
+                        @click="quizConfig.disableAll()"
+                        class="px-3 py-1 text-sm bg-red-500 hover:bg-red-600 text-white rounded-md"
+                      >
+                        Disable All
+                      </button>
+                      <button
+                        @click="randomizeWeights()"
+                        class="px-3 py-1 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-md"
+                      >
+                        Randomize Weights
+                      </button>
+                    </div>
+
+                    <!-- Question Types Grid -->
+                    <div class="grid grid-cols-3 gap-3">
+                      <div
+                        v-for="qType in quizConfig.availableQuestionTypes.value"
+                        :key="qType.name"
+                        class="border border-neutral-200 dark:border-neutral-700 rounded-md p-2"
+                      >
+                        <div class="flex items-start gap-2">
+                          <!-- Checkbox -->
+                          <input
+                            type="checkbox"
+                            :id="`qt-${qType.name}`"
+                            :checked="quizConfig.config.value.question_types[qType.name]?.enabled"
+                            @change="quizConfig.toggleQuestionType(qType.name)"
+                            class="mt-1 w-4 h-4 text-green-600 rounded border-neutral-300 focus:ring-green-500 flex-shrink-0"
+                          />
+
+                          <!-- Content -->
+                          <div class="flex-1 min-w-0">
+                            <label
+                              :for="`qt-${qType.name}`"
+                              class="block text-xs font-medium text-neutral-900 dark:text-neutral-100 cursor-pointer leading-tight"
+                            >
+                              {{ qType.display_name }}
+                            </label>
+
+                            <!-- Example Question -->
+                            <p class="text-[10px] text-neutral-500 dark:text-neutral-400 mt-1 line-clamp-2 italic">
+                              "{{ questionExamples[qType.name] || qType.display_name }}"
+                            </p>
+
+                            <!-- Weight Slider (only show if enabled) -->
+                            <div v-if="quizConfig.config.value.question_types[qType.name]?.enabled" class="mt-2">
+                              <div class="flex items-center gap-1">
+                                <label class="text-[10px] text-neutral-600 dark:text-neutral-400">
+                                  Weight:
+                                </label>
+                                <input
+                                  type="range"
+                                  min="0.1"
+                                  max="10"
+                                  step="0.1"
+                                  :value="quizConfig.config.value.question_types[qType.name].weight"
+                                  @input="quizConfig.updateQuestionWeight(qType.name, parseFloat($event.target.value))"
+                                  class="flex-1 h-1 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer"
+                                />
+                                <span class="text-[10px] text-neutral-600 dark:text-neutral-400 w-8 text-right">
+                                  {{ quizConfig.config.value.question_types[qType.name].weight.toFixed(1) }}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Advanced Settings Section (Expandable) -->
+              <div class="border border-neutral-200 dark:border-neutral-700 rounded-md">
+                <button
+                  @click="advancedExpanded = !advancedExpanded"
+                  class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors"
+                >
+                  <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                    Advanced Settings
+                  </span>
+                  <Icon
+                    :name="advancedExpanded ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                    size="20"
+                    class="text-neutral-500 dark:text-neutral-400"
+                  />
+                </button>
+                <div v-if="advancedExpanded" class="p-4 border-t border-neutral-200 dark:border-neutral-700 space-y-4">
+                  <div>
+                    <label class="flex items-center space-x-3">
+                      <input
+                        type="checkbox"
+                        v-model="quizConfig.config.value.aesthetic_numbers_mode"
+                        class="w-4 h-4 text-green-600 rounded border-neutral-300 focus:ring-green-500"
+                      />
+                      <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">
+                        Aesthetic Numbers Mode
+                      </span>
+                    </label>
+                    <p class="mt-1 ml-7 text-xs text-neutral-500 dark:text-neutral-400">
+                      When enabled, questions with numeric answers will only be generated if the answer options form an ascending or descending sequence (e.g., 1, 2, 3 or 5, 4, 3).
+                    </p>
+                  </div>
+
+                  <div>
+                    <label class="block text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-2">
+                      Direction Cutoff: {{ (quizConfig.config.value.direction_cutoff * 100).toFixed(0) }}%
+                    </label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.05"
+                      v-model.number="quizConfig.config.value.direction_cutoff"
+                      class="w-full h-2 bg-neutral-200 dark:bg-neutral-700 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+                      Controls when directional questions (preceding/following) can appear in the quiz
+                    </p>
+                  </div>
+
+                  <!-- Presets Section -->
+                  <div class="border-t border-neutral-200 dark:border-neutral-700 pt-4">
+                    <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-3">
+                      Configuration Presets
+                    </h4>
+                    <div class="space-y-3">
+                      <!-- Save Preset -->
+                      <div class="flex gap-2">
+                        <input
+                          v-model="presetName"
+                          placeholder="Enter preset name"
+                          class="flex-1 px-3 py-1 text-sm rounded-md bg-white dark:bg-neutral-700 text-black dark:text-white border border-neutral-200 dark:border-neutral-600 focus:border-neutral-800 dark:focus:border-neutral-200 focus:outline-none"
+                        />
+                        <button
+                          @click="savePreset"
+                          :disabled="!presetName || !quizConfig.hasEnabledQuestions.value"
+                          class="px-3 py-1 text-sm bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white rounded-md"
+                        >
+                          Save Preset
+                        </button>
+                      </div>
+
+                      <!-- Load Preset -->
+                      <div v-if="savedPresets.length > 0" class="space-y-2">
+                        <p class="text-xs text-neutral-600 dark:text-neutral-400">Saved Presets:</p>
+                        <div class="flex flex-wrap gap-2">
+                          <div
+                            v-for="preset in savedPresets"
+                            :key="preset"
+                            class="flex items-center gap-1 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded"
+                          >
+                            <button
+                              @click="loadPreset(preset)"
+                              class="text-xs text-neutral-700 dark:text-neutral-300 hover:text-green-600 dark:hover:text-green-400"
+                            >
+                              {{ preset }}
+                            </button>
+                            <button
+                              @click="deletePreset(preset)"
+                              class="ml-1 text-red-500 hover:text-red-600"
+                            >
+                              <Icon name="mdi:close" size="14" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -221,7 +419,7 @@
               <span
                 class="ml-2 text-sm font-medium text-neutral-800 dark:text-neutral-200 flex items-center"
               >
-                Hide wrong options
+                Hide options marked as wrong
               </span>
             </label>
           </div>
@@ -284,7 +482,7 @@
 
                         <!-- Wrong button -->
                         <button
-                          class="flex px-2 py-2 border bg-neutral-100 hover:bg-red-500 hover:text-black dark:bg-neutral-900 dark:hover:bg-red-800/90 dark:hover:text-white"
+                          class="flex px-2 py-2 border bg-neutral-100 dark:bg-neutral-900"
                           :class="{
                             'border-red-400 bg-red-500/80 dark:bg-red-600/30 dark:border-red-950 text-neutral-900 dark:text-white':
                               answers[question.id][index] === 'incorrect',
@@ -292,7 +490,11 @@
                               answers[question.id][index] === 'correct',
                             'text-neutral-600 dark:text-neutral-400 dark:border-neutral-950':
                               answers[question.id][index] === 'unanswered',
+                            'hover:bg-red-500 hover:text-black dark:hover:bg-red-800/90 dark:hover:text-white': canMarkAsIncorrect(question.id, index),
+                            'opacity-50 cursor-not-allowed': !canMarkAsIncorrect(question.id, index),
                           }"
+                          :disabled="!canMarkAsIncorrect(question.id, index)"
+                          :title="!canMarkAsIncorrect(question.id, index) ? 'Cannot mark all options as incorrect' : ''"
                           @click.stop="
                             handleAnswer(question.id, index, 'incorrect')
                           "
@@ -340,55 +542,8 @@
           </div>
         </div>
 
-        <!-- Results -->
-        <div v-if="quizState === 'results'" class="text-center pt-6">
-          <h3 class="font-bold mb-4">
-            Number of correct answers: {{ score }} / {{ questions.length }}
-          </h3>
-          <p>
-            <span class="font-bold">
-              {{
-                score === questions.length ? 'Congratulations!' : 'Good effort!'
-              }}
-            </span>
-            Here are the correct answers for each question, in order:
-          </p>
-          <div class="mt-4 text-xl font-bold">
-            <span
-              v-for="(question, idx) in questions"
-              :key="question.id"
-              class="mr-1"
-              :class="
-                question.options[answers[question.id].indexOf('correct')]
-                  .option === correctAnswers[question.id - 1].toString()
-                  ? 'text-green-500'
-                  : 'text-red-500'
-              "
-            >
-              {{ correctAnswers[question.id - 1] }}
-            </span>
-          </div>
-        </div>
       </div>
 
-      <!-- Message for unanswered questions -->
-      <transition
-        enter-active-class="transition duration-300 ease-out"
-        enter-from-class="transform opacity-0"
-        enter-to-class="transform opacity-100"
-        leave-active-class="transition duration-300 ease-in"
-        leave-from-class="transform opacity-100"
-        leave-to-class="transform opacity-0"
-      >
-        <div v-if="showMessage" class="px-6 pb-3">
-          <div
-            class="p-4 text-red-800 bg-red-50 border border-red-200 rounded-lg dark:text-red-400 dark:bg-red-950/50 dark:border-red-800"
-            role="alert"
-          >
-            {{ message }}
-          </div>
-        </div>
-      </transition>
 
       <div class="flex justify-between gap-3 mt-3 px-6 pb-6">
         <div>
@@ -423,7 +578,7 @@
 
       <div
         v-if="quizState === 'solving'"
-        class="flex justify-between gap-3 mt-3 px-6 pb-6"
+        class="flex justify-between items-center gap-3 mt-3 px-6 pb-6"
       >
         <div class="flex gap-3">
           <button
@@ -431,17 +586,59 @@
             class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
           >
             <Icon name="mdi:arrow-left" class="w-4 h-4 mr-2" />
-            Go Back
+            {{ allCorrect ? 'New Quiz' : 'Go Back' }}
           </button>
           <button
+            v-if="!allCorrect"
             @click="resetQuiz"
             class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
           >
             Reset
           </button>
+          <button
+            v-if="allCorrect"
+            @click="retryQuiz"
+            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+          >
+            Try Again
+          </button>
+          <button
+            @click="showSaveModal = true"
+            class="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm px-4 py-2 rounded-md"
+          >
+            <Icon name="mdi:content-save" class="w-4 h-4 mr-2" />
+            Share / Save Progress
+          </button>
         </div>
+
+        <!-- Inline message between buttons -->
+        <div v-if="showMessage" class="flex-1 flex justify-center">
+          <transition
+            enter-active-class="transition-all duration-300 ease-out"
+            enter-from-class="opacity-0 scale-95"
+            enter-to-class="opacity-100 scale-100"
+            leave-active-class="transition-all duration-1000 ease-in-out"
+            leave-from-class="opacity-100 scale-100"
+            leave-to-class="opacity-0 scale-95"
+          >
+            <div
+              v-if="showMessage"
+              :class="{
+                'px-4 py-2 rounded-md text-sm font-medium': true,
+                'text-green-800 bg-green-100 dark:text-green-400 dark:bg-green-900': messageType === 'success',
+                'text-red-800 bg-red-100 dark:text-red-400 dark:bg-red-900': messageType === 'error',
+                'text-yellow-800 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900': messageType === 'warning'
+              }"
+              role="alert"
+            >
+              {{ message }}
+            </div>
+          </transition>
+        </div>
+
         <div class="flex">
           <button
+            v-if="!allCorrect"
             @click="submitQuiz"
             class="bg-green-500 hover:bg-green-600 text-black font-medium text-sm px-4 py-2 rounded-md"
           >
@@ -450,30 +647,16 @@
         </div>
       </div>
 
-      <div
-        v-if="quizState === 'results'"
-        class="flex justify-end gap-3 mt-3 px-6 pb-6"
-      >
-        <button
-          @click="goBack"
-          class="bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-        >
-          Try Another Quiz
-        </button>
-        <button
-          @click="resetQuiz"
-          class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-        >
-          Reset quiz
-        </button>
-      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import RadioCardCompact from '~/components/RadioCardCompact.vue'
+import SaveQuizModal from '~/components/SaveQuizModal.vue'
+import { useQuizConfig } from '~/composables/useQuizConfig'
 
 useSeoMeta({
   title: 'Create Your Self-Referential Quiz - Quiz Builder'
@@ -488,9 +671,9 @@ type Question = {
   options: { option: string; answer: string }[]
   correctAnswer: number
 }
-type QuizState = 'typeSelection' | 'setup' | 'solving' | 'results'
+type QuizState = 'typeSelection' | 'setup' | 'solving'
 type AnswerState = 'unanswered' | 'correct' | 'incorrect'
-type GenerationType = 'difficulty' | 'custom' | 'answerList'
+type GenerationType = 'difficulty' | 'custom'
 type DifficultyLevel =
   | 'very-easy'
   | 'easy'
@@ -509,16 +692,129 @@ const quizState = ref<QuizState>('typeSelection')
 const generationType = ref<GenerationType>('difficulty')
 const numberOfQuestions = ref(5)
 const difficultyLevel = ref<DifficultyLevel>('easy')
-const answerList = ref('')
 const answerUpToLetter = ref('C')
+
+// For the letter slider - B=1, C=2, ..., N=13
+const letterOptions = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
+const answerUpToLetterIndex = computed({
+  get: () => letterOptions.indexOf(answerUpToLetter.value) + 1,
+  set: (value: number) => {
+    answerUpToLetter.value = letterOptions[value - 1] || 'C'
+  }
+})
 const questions = ref<Question[]>([])
+
+// Custom quiz configuration
+const quizConfig = useQuizConfig()
+const quizConfigLoaded = ref(false)
+const presetName = ref('')
+const savedPresets = ref<string[]>([])
+const questionTypesExpanded = ref(false)
+const advancedExpanded = ref(false)
+
+// Example questions for each question type
+const questionExamples: Record<string, string> = {
+  'First question with answer [X]?': 'The first question with answer B is question',
+  'Only question with answer [X]?': 'The only question with answer C is question',
+  'Last question with answer [X]?': 'The last question with answer A is question',
+  'Answer to question(s) [X_1], ..., [X_n]?': 'The answer to questions 2, 5, and 7 is',
+  'Number of questions with answer [X]?': 'The number of questions with answer D is',
+  'Answer that appears most often is': 'The answer that appears most often is',
+  'Answer that appears least often is': 'The answer that appears least often is',
+  'Only [n] consecutive questions with answer [X]?': 'The only 3 consecutive questions with the answer B are',
+  'Only [n] consecutive questions with same answer?': 'The only 2 consecutive questions with the same answer',
+  'Answer to question [X_1] is same as answer to question?': 'Question 4 has the same answer as exactly one of the listed questions - which one?',
+  'No answer appears exactly what number of times?': 'No answer appears exactly what number of times?',
+  'Alphabetical distance between this and previous/next answer?': 'Alphabetically, the answer to this question and the answer to the following question are',
+  'First next / last previous question with the same answer as this one?': 'The first question after this one with the same answer as this one is',
+  'Only answer that appears exactly [n] times?': 'What is the only answer that appears exactly 3 times?',
+  'Number with answer is [X] equal to number with answer?': 'Number of questions with the answer A is equal to number of questions with which single answer?',
+  'Only letter which answers the same number of [property_1] and [property_2] questions': 'The only letter which answers the same number of even-numbered questions as odd-numbered questions is',
+  'Only letter where the number of times it happens is [property]?': 'The only answer which appears an odd number of times is',
+  'Subtract amount before of answer [X], add after, result?': 'Number of questions before this one answered by B, minus the number of those after this one answered by C, is equal to',
+  'Closest question with same answer as this one is how many away?': 'The closest question with the same answer as this one is',
+  'Closest question with answer [X] is how many away?': 'The closest question answered by E, not counting this one if it is, is',
+  'All among [X_1], ..., [X_n] are either [A_1] or [A_2], what is odd one?': 'Questions 3, 6, 8, and 9 are all answered by A or B (not necessarily all the same one), except for one - which one?',
+  'Sum of all the questions with answer [X]?': 'The sum of the question numbers with answer C is'
+}
+
+// Get route for checking shared quiz
+const route = useRoute()
+const router = useRouter()
+
+// Load configuration on mount
+onMounted(async () => {
+  await quizConfig.loadQuestionTypes()
+  quizConfigLoaded.value = true
+  savedPresets.value = quizConfig.getSavedPresets()
+
+  // Check if we're loading a shared quiz (with null safety)
+  if (route && route.query && route.query.load && route.query.share) {
+    await loadSharedQuiz(route.query.load as string, route.query.share as string)
+
+    // Check if there's saved state to restore
+    if (route.query.state) {
+      const savedState = sessionStorage.getItem('loadedState')
+      if (savedState) {
+        try {
+          const stateData = JSON.parse(savedState)
+          if (stateData.answers) {
+            // Convert string keys to numbers for answer IDs
+            const convertedAnswers: Record<number, AnswerState[]> = {}
+            for (const [key, value] of Object.entries(stateData.answers)) {
+              convertedAnswers[parseInt(key)] = value as AnswerState[]
+            }
+            answers.value = convertedAnswers
+            allCorrect.value = stateData.completed || false
+          }
+          sessionStorage.removeItem('loadedState')
+        } catch (err) {
+          console.error('Failed to restore state:', err)
+        }
+      }
+    }
+  }
+})
+
+const enabledQuestionCount = computed(() => {
+  return quizConfig.enabledQuestionTypes.value.length
+})
+
+const savePreset = () => {
+  if (presetName.value && quizConfig.hasEnabledQuestions.value) {
+    quizConfig.savePreset(presetName.value)
+    savedPresets.value = quizConfig.getSavedPresets()
+    presetName.value = ''
+  }
+}
+
+const loadPreset = (name: string) => {
+  quizConfig.loadPreset(name)
+}
+
+const deletePreset = (name: string) => {
+  quizConfig.deletePreset(name)
+  savedPresets.value = quizConfig.getSavedPresets()
+}
+
+const randomizeWeights = () => {
+  for (const qType of quizConfig.availableQuestionTypes.value) {
+    if (quizConfig.config.value.question_types[qType.name]?.enabled) {
+      const randomWeight = Math.random() * 9.9 + 0.1 // 0.1 to 10
+      quizConfig.updateQuestionWeight(qType.name, parseFloat(randomWeight.toFixed(1)))
+    }
+  }
+}
 const answers = ref<Record<number, AnswerState[]>>({})
-const correctAnswers = ref<number[]>([])
+const quizId = ref<string | null>(null)
+const shareId = ref<string | null>(null)
+const allCorrect = ref(false)
+const messageType = ref<'success' | 'error' | 'warning'>('error')
 const uniqueQuiz = ref(true)
 const generationTime = ref<number | null>(null)
 const seed = ref(null)
-const score = ref(0)
 const wrongOptionsHidden = ref(false)
+const showSaveModal = ref(false)
 
 const difficultyModes: DifficultyMode[] = [
   {
@@ -552,6 +848,18 @@ const generateQuiz = async () => {
     if (generationType.value === 'custom') {
       numQuestions = numberOfQuestions.value
       answerUpTo = answerUpToLetter.value
+
+      // Validate custom config if question types are selected
+      if (!quizConfig.hasEnabledQuestions.value) {
+        message.value = 'Please select at least one question type in the Question Types section below'
+        messageType.value = 'warning'
+        showMessage.value = true
+        questionTypesExpanded.value = true // Auto-expand to guide user
+        setTimeout(() => {
+          showMessage.value = false
+        }, 5000)
+        return
+      }
     } else if (generationType.value === 'difficulty') {
       const level = difficultyModes.find(
         (level) => level.value === difficultyLevel.value
@@ -560,8 +868,6 @@ const generateQuiz = async () => {
         numQuestions = level.questionCount
         answerUpTo = level.answerUpToLetter
       }
-    } else if (generationType.value === 'answerList') {
-      numQuestions = answerList.value.length
     }
 
     const response = await fetch(`${apiUrl}/quizzes`, {
@@ -569,26 +875,144 @@ const generateQuiz = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         num_questions: numQuestions,
-        answer_list: answerList.value,
         answer_up_to_letter: answerUpTo,
+        custom_config: generationType.value === 'custom' && quizConfig.hasEnabledQuestions.value
+          ? quizConfig.config.value
+          : null,
       }),
     })
+
+    if (!response.ok) {
+      const errorData = await response.json()
+
+      // Handle specific error types
+      if (errorData.detail) {
+        const detail = errorData.detail
+
+        if (detail.error === 'generation_timeout' || detail.error === 'generation_failed') {
+          message.value = `${detail.message}\n\n${detail.suggestion}`
+          messageType.value = 'error'
+          showMessage.value = true
+
+          // Auto-expand question types section for custom quizzes
+          if (generationType.value === 'custom') {
+            questionTypesExpanded.value = true
+          }
+
+          setTimeout(() => {
+            showMessage.value = false
+          }, 10000) // Show for 10 seconds due to longer message
+        } else {
+          message.value = detail.message || 'Failed to generate quiz. Please try again.'
+          messageType.value = 'error'
+          showMessage.value = true
+          setTimeout(() => {
+            showMessage.value = false
+          }, 5000)
+        }
+      } else {
+        message.value = 'Failed to generate quiz. Please try different parameters.'
+        messageType.value = 'error'
+        showMessage.value = true
+        setTimeout(() => {
+          showMessage.value = false
+        }, 5000)
+      }
+      return
+    }
+
     const data = await response.json()
     console.log(data)
-    questions.value = data.quiz
-    correctAnswers.value = data.answers
-    uniqueQuiz.value = data.unique_quiz
+    quizId.value = data.quiz_id
+    shareId.value = data.share_id
+    questions.value = data.questions
     generationTime.value = data.generation_time
     seed.value = data.seed
     answers.value = Object.fromEntries(
-      data.quiz.map((q: Question) => [
+      data.questions.map((q: Question) => [
         q.id,
         Array(q.options.length).fill('unanswered'),
       ])
     )
     quizState.value = 'solving'
+
+    // Update URL to include the quiz share_id for browser history
+    await router.replace({
+      path: '/create',
+      query: {
+        load: data.quiz_id,
+        share: data.share_id
+      }
+    })
+
+    // Load any saved user state
+    await loadUserState()
   } catch (error) {
     console.error('Error generating quiz:', error)
+    message.value = 'An unexpected error occurred. Please check your connection and try again.'
+    messageType.value = 'error'
+    showMessage.value = true
+    setTimeout(() => {
+      showMessage.value = false
+    }, 5000)
+  }
+}
+
+const canMarkAsIncorrect = (questionId: number, optionIndex: number): boolean => {
+  const currentAnswers = answers.value[questionId]
+
+  // If this option is already marked as incorrect, allow toggling
+  if (currentAnswers[optionIndex] === 'incorrect') {
+    return true
+  }
+
+  // Count how many options are not marked as incorrect
+  const nonIncorrectCount = currentAnswers.filter(state => state !== 'incorrect').length
+
+  // Prevent marking as incorrect if this is the last non-incorrect option
+  return nonIncorrectCount > 1
+}
+
+// Auto-save user state to backend
+const saveUserState = async () => {
+  if (!quizId.value || quizState.value !== 'solving') return
+
+  try {
+    const apiUrl = useRuntimeConfig().public.apiUrl
+    await fetch(`${apiUrl}/quizzes/${quizId.value}/state`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        answers: answers.value,
+        completed: allCorrect.value
+      })
+    })
+  } catch (error) {
+    console.error('Failed to save state:', error)
+  }
+}
+
+// Load user state from backend
+const loadUserState = async () => {
+  if (!quizId.value) return
+
+  try {
+    const apiUrl = useRuntimeConfig().public.apiUrl
+    const response = await fetch(`${apiUrl}/quizzes/${quizId.value}/state`)
+    if (response.ok) {
+      const state = await response.json()
+      if (state.answers && Object.keys(state.answers).length > 0) {
+        // Convert string keys to numbers for answer IDs
+        const convertedAnswers: Record<number, AnswerState[]> = {}
+        for (const [key, value] of Object.entries(state.answers)) {
+          convertedAnswers[parseInt(key)] = value as AnswerState[]
+        }
+        answers.value = convertedAnswers
+        allCorrect.value = state.completed || false
+      }
+    }
+  } catch (error) {
+    console.error('Failed to load state:', error)
   }
 }
 
@@ -599,14 +1023,19 @@ const handleAnswer = (
 ) => {
   if (quizState.value !== 'solving') return
 
+  // Don't allow marking as incorrect if it's the last non-incorrect option
+  if (newState === 'incorrect' && !canMarkAsIncorrect(questionId, optionIndex)) {
+    return
+  }
+
   // Retrieve the current answers for the given question
   const currentAnswers = answers.value[questionId]
   const updatedAnswers = [...currentAnswers]
 
   const originalState = updatedAnswers[optionIndex]
 
-  // If the new state is 'correct', mark all options as 'incorrect'
-  if (newState === 'correct') {
+  // Only mark all options as 'incorrect' when turning ON the correct state
+  if (newState === 'correct' && originalState !== 'correct') {
     updatedAnswers.fill('incorrect')
   }
 
@@ -617,14 +1046,56 @@ const handleAnswer = (
     updatedAnswers[optionIndex] = newState
   }
 
+  // Check if marking as incorrect would leave only one non-incorrect option
+  if (newState === 'incorrect') {
+    const nonIncorrectIndices = updatedAnswers
+      .map((state, idx) => state !== 'incorrect' ? idx : -1)
+      .filter(idx => idx !== -1)
+
+    // If only one option remains that's not marked as incorrect, mark it as correct
+    if (nonIncorrectIndices.length === 1) {
+      updatedAnswers[nonIncorrectIndices[0]] = 'correct'
+    }
+  }
+
   // Update the answers with the new states
   answers.value[questionId] = updatedAnswers
+
+  // Auto-save state
+  saveUserState()
 }
 
 const showMessage = ref(false)
 const message = ref('')
 
-const submitQuiz = () => {
+const validateAnswers = async () => {
+  if (!quizId.value) {
+    throw new Error('No quiz ID available')
+  }
+
+  const selectedAnswers = questions.value.map((question) => {
+    const selectedIdx = answers.value[question.id].indexOf('correct')
+    return question.options[selectedIdx].option
+  })
+
+  const apiUrl = useRuntimeConfig().public.apiUrl
+  const response = await fetch(`${apiUrl}/quizzes/${quizId.value}/check`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ answers: selectedAnswers }),
+  })
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error('Quiz expired or not found')
+    }
+    throw new Error('Failed to validate answers')
+  }
+
+  return await response.json()
+}
+
+const submitQuiz = async () => {
   // Check if all questions have been answered
   const unansweredQuestions = questions.value.filter(
     (question) => !answers.value[question.id].includes('correct')
@@ -634,6 +1105,7 @@ const submitQuiz = () => {
     message.value = `Please answer ${
       unansweredQuestions.length === 1 ? 'question' : 'questions'
     } ${unansweredQuestions.map((q) => q.id).join(', ')} before submitting.`
+    messageType.value = 'warning'
     showMessage.value = true
     setTimeout(() => {
       showMessage.value = false
@@ -641,19 +1113,35 @@ const submitQuiz = () => {
     return
   }
 
-  let numCorrectAnswers = 0
-  questions.value.forEach((question) => {
-    const selected_answer_idx = answers.value[question.id].indexOf('correct')
-    const selected_option = question.options[selected_answer_idx].option
-    const correct_option = correctAnswers.value[question.id - 1].toString()
+  try {
+    const result = await validateAnswers()
 
-    if (selected_option === correct_option) {
-      numCorrectAnswers++
+    if (result.correct) {
+      // All answers are correct!
+      message.value = "🎉 Congratulations! All answers are correct!"
+      messageType.value = 'success'
+      showMessage.value = true
+      allCorrect.value = true
+      // Save completed state
+      await saveUserState()
+    } else {
+      // Some answers are incorrect
+      message.value = "At least one answer is incorrect. Keep trying!"
+      messageType.value = 'error'
+      showMessage.value = true
+      setTimeout(() => {
+        showMessage.value = false
+      }, 7000)
     }
-  })
-
-  score.value = numCorrectAnswers
-  quizState.value = 'results'
+  } catch (error) {
+    console.error('Error validating answers:', error)
+    message.value = error instanceof Error ? error.message : 'Failed to validate answers. Please try again.'
+    messageType.value = 'error'
+    showMessage.value = true
+    setTimeout(() => {
+      showMessage.value = false
+    }, 5000)
+  }
 }
 
 const setupQuiz = () => {
@@ -668,7 +1156,8 @@ const goBack = () => {
   }
 
   answers.value = {}
-  score.value = 0
+  allCorrect.value = false
+  showMessage.value = false
 }
 
 const resetQuiz = () => {
@@ -677,11 +1166,84 @@ const resetQuiz = () => {
       'unanswered'
     )
   })
+  allCorrect.value = false
+  showMessage.value = false
   quizState.value = 'solving'
+}
+
+const retryQuiz = async () => {
+  if (!quizId.value) {
+    // If no quiz ID, go back to setup
+    goBack()
+    return
+  }
+
+  try {
+    const apiUrl = useRuntimeConfig().public.apiUrl
+    const response = await fetch(`${apiUrl}/quizzes/${quizId.value}`)
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        message.value = 'Quiz has expired. Please generate a new one.'
+        showMessage.value = true
+        setTimeout(() => {
+          showMessage.value = false
+          goBack()
+        }, 3000)
+        return
+      }
+      throw new Error('Failed to retrieve quiz')
+    }
+
+    const data = await response.json()
+    questions.value = data.questions
+    resetQuiz()
+  } catch (error) {
+    console.error('Error retrieving quiz:', error)
+    message.value = 'Failed to retrieve quiz. Please generate a new one.'
+    showMessage.value = true
+    setTimeout(() => {
+      showMessage.value = false
+      goBack()
+    }, 3000)
+  }
 }
 
 const toggleWrongOptions = () => {
   wrongOptionsHidden.value = !wrongOptionsHidden.value
+}
+
+const loadSharedQuiz = async (loadQuizId: string, loadShareId: string) => {
+  try {
+    const apiUrl = useRuntimeConfig().public.apiUrl
+    const response = await fetch(`${apiUrl}/quizzes/${loadQuizId}`)
+
+    if (!response.ok) {
+      console.error('Failed to load shared quiz')
+      return
+    }
+
+    const data = await response.json()
+
+    // Load the quiz data
+    quizId.value = loadQuizId
+    shareId.value = loadShareId
+    questions.value = data.questions
+    seed.value = data.seed
+
+    // Initialize answers array
+    answers.value = Object.fromEntries(
+      data.questions.map((q: Question) => [
+        q.id,
+        Array(q.options.length).fill('unanswered'),
+      ])
+    )
+
+    // Jump directly to solving state
+    quizState.value = 'solving'
+  } catch (error) {
+    console.error('Error loading shared quiz:', error)
+  }
 }
 
 const cardTitle = computed(() => {
@@ -691,9 +1253,7 @@ const cardTitle = computed(() => {
     case 'setup':
       return 'Create your quiz'
     case 'solving':
-      return 'Solve the quiz'
-    case 'results':
-      return 'Quiz results'
+      return allCorrect.value ? '🎉 Quiz Completed!' : 'Solve the quiz'
     default:
       return ''
   }
@@ -706,9 +1266,9 @@ const cardDescription = computed(() => {
     case 'setup':
       return 'Choose your quiz parameters'
     case 'solving':
-      return 'Select the correct answer for each question'
-    case 'results':
-      return 'See how well you did!'
+      return allCorrect.value
+        ? 'You solved it! Try another quiz or retry this one.'
+        : 'Select the correct answer for each question'
     default:
       return ''
   }

@@ -110,6 +110,8 @@ export default defineNuxtConfig({
         'mdi:close',
         'mdi:arrow-left',
         'mdi:arrow-right',
+        'mdi:content-save',
+        'mdi:content-copy',
       ],
       scan: true,
     },
