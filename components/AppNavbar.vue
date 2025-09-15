@@ -25,14 +25,13 @@
           >
             About
           </NuxtLink>
-          <NuxtLink
-            to="/create"
+          <a
+            href="/create"
             aria-label="Create"
             class="xs:text-sm sm:text-md px-4 py-2 rounded-md dark:bg-white dark:text-black bg-black text-white hover:opacity-90 transition-opacity"
-            active-class="cursor-default hover:!opacity-100"
           >
             Create
-          </NuxtLink>
+          </a>
         </div>
         <div class="flex items-center gap-2 sm:gap-6">
           <NuxtLink
