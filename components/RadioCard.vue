@@ -31,10 +31,10 @@
 </template>
 
 <script setup lang="ts">
-type GenerationType = 'difficulty' | 'custom'
+type GenerationType = 'difficulty' | 'custom' | 'showcase'
 
 const isGenerationType = (value: string): value is GenerationType =>
-  ['difficulty', 'custom'].includes(value)
+  ['difficulty', 'custom', 'showcase'].includes(value)
 
 defineProps<{
   id: string

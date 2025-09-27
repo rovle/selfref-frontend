@@ -102,6 +102,17 @@
                       @update:modelValue="(val: GenerationType) => (generationType = val)"
                     />
                   </li>
+                  <li>
+                    <RadioCard
+                      id="showcase"
+                      value="showcase"
+                      name="generationType"
+                      title="Showcase Quizzes"
+                      description="Play handcrafted puzzles from our collection."
+                      :model-value="generationType"
+                      @update:modelValue="(val: GenerationType) => (generationType = val)"
+                    />
+                  </li>
                 </ul>
               </div>
             </div>
@@ -125,6 +136,43 @@
                   :model-value="difficultyLevel"
                   @update:modelValue="(val) => (difficultyLevel = val)"
                 />
+              </div>
+            </div>
+
+            <div v-if="generationType === 'showcase'">
+              <h3
+                class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
+              >
+                Select a Showcase Quiz
+              </h3>
+              <div v-if="!showcaseQuizzes.length" class="text-center py-8">
+                <p class="text-neutral-500 dark:text-neutral-400">Loading showcase quizzes...</p>
+              </div>
+              <div v-else class="grid gap-4 md:grid-cols-2">
+                <div
+                  v-for="quiz in showcaseQuizzes"
+                  :key="quiz.curated_id"
+                  @click="selectedShowcaseId = quiz.curated_id"
+                  class="p-4 border rounded-lg cursor-pointer transition-all"
+                  :class="selectedShowcaseId === quiz.curated_id
+                    ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
+                    : 'border-neutral-200 dark:border-neutral-700 hover:border-neutral-400 dark:hover:border-neutral-500'"
+                >
+                  <h4 class="font-semibold text-neutral-900 dark:text-white">{{ quiz.title }}</h4>
+                  <p class="text-sm text-neutral-600 dark:text-neutral-400 mt-1">{{ quiz.description }}</p>
+                  <div class="mt-2 inline-flex items-center gap-2">
+                    <span
+                      class="px-2 py-1 text-xs rounded-full"
+                      :class="{
+                        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200': quiz.difficulty === 'easy',
+                        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200': quiz.difficulty === 'medium',
+                        'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200': quiz.difficulty === 'hard'
+                      }"
+                    >
+                      {{ quiz.difficulty }}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -612,7 +660,7 @@
         </div>
 
         <!-- Inline message between buttons -->
-        <div v-if="showMessage" class="flex-1 flex justify-center">
+        <div class="flex-1 flex justify-center">
           <transition
             enter-active-class="transition-all duration-300 ease-out"
             enter-from-class="opacity-0 scale-95"
@@ -673,7 +721,7 @@ type Question = {
 }
 type QuizState = 'typeSelection' | 'setup' | 'solving'
 type AnswerState = 'unanswered' | 'correct' | 'incorrect'
-type GenerationType = 'difficulty' | 'custom'
+type GenerationType = 'difficulty' | 'custom' | 'showcase'
 type DifficultyLevel =
   | 'very-easy'
   | 'easy'
@@ -693,6 +741,8 @@ const generationType = ref<GenerationType>('difficulty')
 const numberOfQuestions = ref(5)
 const difficultyLevel = ref<DifficultyLevel>('easy')
 const answerUpToLetter = ref('C')
+const showcaseQuizzes = ref<any[]>([])
+const selectedShowcaseId = ref<string | null>(null)
 
 // For the letter slider - B=1, C=2, ..., N=13
 const letterOptions = ['B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N']
@@ -747,6 +797,15 @@ onMounted(async () => {
   await quizConfig.loadQuestionTypes()
   quizConfigLoaded.value = true
   savedPresets.value = quizConfig.getSavedPresets()
+
+  // Load showcase quizzes
+  try {
+    const response = await fetch(`${apiUrl}/api/curated-quizzes`)
+    const data = await response.json()
+    showcaseQuizzes.value = data.quizzes || []
+  } catch (error) {
+    console.error('Failed to load showcase quizzes:', error)
+  }
 
   // Check if we're loading a shared quiz (with null safety)
   if (route && route.query && route.query.load && route.query.share) {
@@ -842,45 +901,56 @@ const difficultyModes: DifficultyMode[] = [
 
 const generateQuiz = async () => {
   try {
-    let numQuestions = 0
-    let answerUpTo = 'C'
+    let response
 
-    if (generationType.value === 'custom') {
-      numQuestions = numberOfQuestions.value
-      answerUpTo = answerUpToLetter.value
-
-      // Validate custom config if question types are selected
-      if (!quizConfig.hasEnabledQuestions.value) {
-        message.value = 'Please select at least one question type in the Question Types section below'
-        messageType.value = 'warning'
-        showMessage.value = true
-        questionTypesExpanded.value = true // Auto-expand to guide user
-        setTimeout(() => {
-          showMessage.value = false
-        }, 5000)
+    if (generationType.value === 'showcase') {
+      // Generate from showcase/curated quiz
+      if (!selectedShowcaseId.value) {
+        showNotification('Please select a showcase quiz', 'warning', 3000)
         return
       }
-    } else if (generationType.value === 'difficulty') {
-      const level = difficultyModes.find(
-        (level) => level.value === difficultyLevel.value
-      )
-      if (level) {
-        numQuestions = level.questionCount
-        answerUpTo = level.answerUpToLetter
-      }
-    }
 
-    const response = await fetch(`${apiUrl}/quizzes`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        num_questions: numQuestions,
-        answer_up_to_letter: answerUpTo,
-        custom_config: generationType.value === 'custom' && quizConfig.hasEnabledQuestions.value
-          ? quizConfig.config.value
-          : null,
-      }),
-    })
+      response = await fetch(`${apiUrl}/quizzes/from-curated/${selectedShowcaseId.value}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
+    } else {
+      // Original generation logic
+      let numQuestions = 0
+      let answerUpTo = 'C'
+
+      if (generationType.value === 'custom') {
+        numQuestions = numberOfQuestions.value
+        answerUpTo = answerUpToLetter.value
+
+        // Validate custom config if question types are selected
+        if (!quizConfig.hasEnabledQuestions.value) {
+          showNotification('Please select at least one question type in the Question Types section below', 'warning', 5000)
+          questionTypesExpanded.value = true // Auto-expand to guide user
+          return
+        }
+      } else if (generationType.value === 'difficulty') {
+        const level = difficultyModes.find(
+          (level) => level.value === difficultyLevel.value
+        )
+        if (level) {
+          numQuestions = level.questionCount
+          answerUpTo = level.answerUpToLetter
+        }
+      }
+
+      response = await fetch(`${apiUrl}/quizzes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          num_questions: numQuestions,
+          answer_up_to_letter: answerUpTo,
+          custom_config: generationType.value === 'custom' && quizConfig.hasEnabledQuestions.value
+            ? quizConfig.config.value
+            : null,
+        }),
+      })
+    }
 
     if (!response.ok) {
       const errorData = await response.json()
@@ -890,33 +960,17 @@ const generateQuiz = async () => {
         const detail = errorData.detail
 
         if (detail.error === 'generation_timeout' || detail.error === 'generation_failed') {
-          message.value = `${detail.message}\n\n${detail.suggestion}`
-          messageType.value = 'error'
-          showMessage.value = true
+          showNotification(`${detail.message}\n\n${detail.suggestion}`, 'error', 10000) // Show for 10 seconds due to longer message
 
           // Auto-expand question types section for custom quizzes
           if (generationType.value === 'custom') {
             questionTypesExpanded.value = true
           }
-
-          setTimeout(() => {
-            showMessage.value = false
-          }, 10000) // Show for 10 seconds due to longer message
         } else {
-          message.value = detail.message || 'Failed to generate quiz. Please try again.'
-          messageType.value = 'error'
-          showMessage.value = true
-          setTimeout(() => {
-            showMessage.value = false
-          }, 5000)
+          showNotification(detail.message || 'Failed to generate quiz. Please try again.', 'error', 5000)
         }
       } else {
-        message.value = 'Failed to generate quiz. Please try different parameters.'
-        messageType.value = 'error'
-        showMessage.value = true
-        setTimeout(() => {
-          showMessage.value = false
-        }, 5000)
+        showNotification('Failed to generate quiz. Please try different parameters.', 'error', 5000)
       }
       return
     }
@@ -945,16 +999,10 @@ const generateQuiz = async () => {
       }
     })
 
-    // Load any saved user state
-    await loadUserState()
+    // User state is now only loaded through explicit share links
   } catch (error) {
     console.error('Error generating quiz:', error)
-    message.value = 'An unexpected error occurred. Please check your connection and try again.'
-    messageType.value = 'error'
-    showMessage.value = true
-    setTimeout(() => {
-      showMessage.value = false
-    }, 5000)
+    showNotification('An unexpected error occurred. Please check your connection and try again.', 'error', 5000)
   }
 }
 
@@ -973,48 +1021,8 @@ const canMarkAsIncorrect = (questionId: number, optionIndex: number): boolean =>
   return nonIncorrectCount > 1
 }
 
-// Auto-save user state to backend
-const saveUserState = async () => {
-  if (!quizId.value || quizState.value !== 'solving') return
-
-  try {
-    const apiUrl = useRuntimeConfig().public.apiUrl
-    await fetch(`${apiUrl}/quizzes/${quizId.value}/state`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        answers: answers.value,
-        completed: allCorrect.value
-      })
-    })
-  } catch (error) {
-    console.error('Failed to save state:', error)
-  }
-}
-
-// Load user state from backend
-const loadUserState = async () => {
-  if (!quizId.value) return
-
-  try {
-    const apiUrl = useRuntimeConfig().public.apiUrl
-    const response = await fetch(`${apiUrl}/quizzes/${quizId.value}/state`)
-    if (response.ok) {
-      const state = await response.json()
-      if (state.answers && Object.keys(state.answers).length > 0) {
-        // Convert string keys to numbers for answer IDs
-        const convertedAnswers: Record<number, AnswerState[]> = {}
-        for (const [key, value] of Object.entries(state.answers)) {
-          convertedAnswers[parseInt(key)] = value as AnswerState[]
-        }
-        answers.value = convertedAnswers
-        allCorrect.value = state.completed || false
-      }
-    }
-  } catch (error) {
-    console.error('Failed to load state:', error)
-  }
-}
+// User state is now managed through explicit save/load via share links only
+// No auto-save functionality - users must click the save button
 
 const handleAnswer = (
   questionId: number,
@@ -1061,12 +1069,34 @@ const handleAnswer = (
   // Update the answers with the new states
   answers.value[questionId] = updatedAnswers
 
-  // Auto-save state
-  saveUserState()
+  // State is now only saved through the explicit save button
 }
 
 const showMessage = ref(false)
 const message = ref('')
+const messageTimerRef = ref<ReturnType<typeof setTimeout> | null>(null)
+
+// Centralized message display function with proper timer management
+const showNotification = (text: string, type: 'success' | 'error' | 'warning', duration?: number) => {
+  // Clear any existing timer to prevent overlap
+  if (messageTimerRef.value) {
+    clearTimeout(messageTimerRef.value)
+    messageTimerRef.value = null
+  }
+
+  // Set message properties
+  message.value = text
+  messageType.value = type
+  showMessage.value = true
+
+  // Only set timer if duration is provided (not for success messages)
+  if (duration) {
+    messageTimerRef.value = setTimeout(() => {
+      showMessage.value = false
+      messageTimerRef.value = null
+    }, duration)
+  }
+}
 
 const validateAnswers = async () => {
   if (!quizId.value) {
@@ -1102,14 +1132,10 @@ const submitQuiz = async () => {
   )
 
   if (unansweredQuestions.length > 0) {
-    message.value = `Please answer ${
+    const warningText = `Please answer ${
       unansweredQuestions.length === 1 ? 'question' : 'questions'
     } ${unansweredQuestions.map((q) => q.id).join(', ')} before submitting.`
-    messageType.value = 'warning'
-    showMessage.value = true
-    setTimeout(() => {
-      showMessage.value = false
-    }, 5000)
+    showNotification(warningText, 'warning', 5000)
     return
   }
 
@@ -1118,29 +1144,17 @@ const submitQuiz = async () => {
 
     if (result.correct) {
       // All answers are correct!
-      message.value = "🎉 Congratulations! All answers are correct!"
-      messageType.value = 'success'
-      showMessage.value = true
+      showNotification("🎉 Congratulations! All answers are correct!", 'success')
       allCorrect.value = true
-      // Save completed state
-      await saveUserState()
+      // Completed state is saved through the save button
     } else {
       // Some answers are incorrect
-      message.value = "At least one answer is incorrect. Keep trying!"
-      messageType.value = 'error'
-      showMessage.value = true
-      setTimeout(() => {
-        showMessage.value = false
-      }, 7000)
+      showNotification("At least one answer is incorrect. Keep trying!", 'error', 7000)
     }
   } catch (error) {
     console.error('Error validating answers:', error)
-    message.value = error instanceof Error ? error.message : 'Failed to validate answers. Please try again.'
-    messageType.value = 'error'
-    showMessage.value = true
-    setTimeout(() => {
-      showMessage.value = false
-    }, 5000)
+    const errorMessage = error instanceof Error ? error.message : 'Failed to validate answers. Please try again.'
+    showNotification(errorMessage, 'error', 5000)
   }
 }
 
@@ -1157,6 +1171,12 @@ const goBack = () => {
 
   answers.value = {}
   allCorrect.value = false
+
+  // Clear any active message timer before hiding message
+  if (messageTimerRef.value) {
+    clearTimeout(messageTimerRef.value)
+    messageTimerRef.value = null
+  }
   showMessage.value = false
 }
 
@@ -1167,6 +1187,12 @@ const resetQuiz = () => {
     )
   })
   allCorrect.value = false
+
+  // Clear any active message timer before hiding message
+  if (messageTimerRef.value) {
+    clearTimeout(messageTimerRef.value)
+    messageTimerRef.value = null
+  }
   showMessage.value = false
   quizState.value = 'solving'
 }
@@ -1184,12 +1210,8 @@ const retryQuiz = async () => {
 
     if (!response.ok) {
       if (response.status === 404) {
-        message.value = 'Quiz has expired. Please generate a new one.'
-        showMessage.value = true
-        setTimeout(() => {
-          showMessage.value = false
-          goBack()
-        }, 3000)
+        showNotification('Quiz has expired. Please generate a new one.', 'error', 3000)
+        setTimeout(() => goBack(), 3000) // Keep navigation delay
         return
       }
       throw new Error('Failed to retrieve quiz')
@@ -1200,12 +1222,8 @@ const retryQuiz = async () => {
     resetQuiz()
   } catch (error) {
     console.error('Error retrieving quiz:', error)
-    message.value = 'Failed to retrieve quiz. Please generate a new one.'
-    showMessage.value = true
-    setTimeout(() => {
-      showMessage.value = false
-      goBack()
-    }, 3000)
+    showNotification('Failed to retrieve quiz. Please generate a new one.', 'error', 3000)
+    setTimeout(() => goBack(), 3000) // Keep navigation delay
   }
 }
 
