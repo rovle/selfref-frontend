@@ -34,14 +34,6 @@
           </a>
         </div>
         <div class="flex items-center gap-2 sm:gap-6">
-          <NuxtLink
-            to="https://github.com/rovle/self-referential-quizzes"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center justify-center p-1 transition-colors focus:outline-none rounded-md hover:bg-black/5 hover:dark:bg-white/5 text-neutral-800 dark:text-neutral-100"
-          >
-            <Icon name="mdi:github" class="h-7 w-7" />
-          </NuxtLink>
           <button
             @click="toggleColorMode"
             class="flex items-center justify-center p-1 pb-0 transition-colors focus:outline-none rounded-md hover:bg-black/5 hover:dark:bg-white/5"

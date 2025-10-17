@@ -115,34 +115,6 @@ export const useQuizConfig = () => {
     return Object.values(config.value.question_types).some(cfg => cfg.enabled)
   })
 
-  // Save configuration to localStorage
-  const savePreset = (name: string) => {
-    const presets = JSON.parse(localStorage.getItem('quizPresets') || '{}')
-    presets[name] = config.value
-    localStorage.setItem('quizPresets', JSON.stringify(presets))
-  }
-
-  // Load configuration from localStorage
-  const loadPreset = (name: string) => {
-    const presets = JSON.parse(localStorage.getItem('quizPresets') || '{}')
-    if (presets[name]) {
-      config.value = presets[name]
-    }
-  }
-
-  // Get list of saved presets
-  const getSavedPresets = () => {
-    const presets = JSON.parse(localStorage.getItem('quizPresets') || '{}')
-    return Object.keys(presets)
-  }
-
-  // Delete a preset
-  const deletePreset = (name: string) => {
-    const presets = JSON.parse(localStorage.getItem('quizPresets') || '{}')
-    delete presets[name]
-    localStorage.setItem('quizPresets', JSON.stringify(presets))
-  }
-
   // Reset to default configuration
   const resetConfig = () => {
     for (const qType in config.value.question_types) {
@@ -179,10 +151,6 @@ export const useQuizConfig = () => {
     updateDirectionWeights,
     enabledQuestionTypes,
     hasEnabledQuestions,
-    savePreset,
-    loadPreset,
-    getSavedPresets,
-    deletePreset,
     resetConfig,
     enableAll,
     disableAll

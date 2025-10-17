@@ -9,43 +9,16 @@
 
       <div class="space-y-4 text-black dark:text-white">
         <p>
-          Self-referential quizzes are a fascinating type of logic puzzle, where
-          each question refers to the properties of the entire quiz, demanding
-          recursive thinking and a meta-logical approach to solve. They
-          challenge your ability to reason about a system while being part of
-          it.
-        </p>
-
-        <p>
-          These captivating puzzles date back to the early 1990s, with some
-          containing as many as 20 questions. Check out the
-          <NuxtLink
+	  Inspired by Jim Propp's
+	  <NuxtLink
             to="https://faculty.uml.edu/jpropp/srat-Q.txt"
             class="underline underline-offset-4 hover:opacity-70"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Self-Referential Aptitude Test (S.R.A.T.)
-          </NuxtLink>
-          by James Propp and
-          <NuxtLink
-            to="https://www.mathpuzzle.com/20questions.htm"
-            class="underline underline-offset-4 hover:opacity-70"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Twenty Questions
-          </NuxtLink>
-          by Don Woods for well-known examples.
-        </p>
-
-        <p>
-          Our builder brings this concept into a powerful, modern tool. This
-          project was specifically created to serve as a benchmark for
-          evaluating advanced reasoning capabilities of large language models
-          (LLMs). The inherent recursion, meta-logic and scalability (e.g.
-          hundreds of questions) of self-referential quizzes make them ideal for
-          such a purpose.
+            Self-Referential Aptitude Test (S.R.A.T.)</NuxtLink>,
+	  this websites hosts a generator of self-referential quizzes,
+	as well as an interface for (trying to) solve them.
         </p>
       </div>
 

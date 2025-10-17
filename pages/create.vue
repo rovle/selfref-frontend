@@ -40,12 +40,7 @@
                   >
                     <li>
                       Start by choosing how you want to create your quiz: pick a
-                      difficulty level or customize it yourself.
-                    </li>
-                    <li>
-                      Remember, in self-referential quizzes, each question
-                      relates to the quiz itself, including its structure,
-                      content, and answers. Think recursively!
+                      difficulty level, customize the quiz yourself, or choose one of the curated quizzes.
                     </li>
                     <li>
                       Use the
@@ -61,14 +56,11 @@
                         <Icon name="mdi:close" size="14" />
                       </span>
                       buttons next to each option to mark them as correct or
-                      incorrect. This helps you keep track of your answers and
-                      narrow down the possible solutions as you work through the
-                      quiz.
-                    </li>
+                      incorrect.
+</li>
                     <li>
-                      Each question has exactly one correct answer. To solve the
-                      quiz, select the correct option for every question.
-                    </li>
+                      Each generated quiz has a <strong>unique</strong> solution. In some cases, this in itself can be a clue.
+			</li>
                   </ul>
                 </div>
               </section>
@@ -385,55 +377,6 @@
                       Controls when directional questions (preceding/following) can appear in the quiz
                     </p>
                   </div>
-
-                  <!-- Presets Section -->
-                  <div class="border-t border-neutral-200 dark:border-neutral-700 pt-4">
-                    <h4 class="text-sm font-medium text-neutral-900 dark:text-neutral-100 mb-3">
-                      Configuration Presets
-                    </h4>
-                    <div class="space-y-3">
-                      <!-- Save Preset -->
-                      <div class="flex gap-2">
-                        <input
-                          v-model="presetName"
-                          placeholder="Enter preset name"
-                          class="flex-1 px-3 py-1 text-sm rounded-md bg-white dark:bg-neutral-700 text-black dark:text-white border border-neutral-200 dark:border-neutral-600 focus:border-neutral-800 dark:focus:border-neutral-200 focus:outline-none"
-                        />
-                        <button
-                          @click="savePreset"
-                          :disabled="!presetName || !quizConfig.hasEnabledQuestions.value"
-                          class="px-3 py-1 text-sm bg-blue-500 hover:bg-blue-600 disabled:bg-neutral-300 disabled:cursor-not-allowed text-white rounded-md"
-                        >
-                          Save Preset
-                        </button>
-                      </div>
-
-                      <!-- Load Preset -->
-                      <div v-if="savedPresets.length > 0" class="space-y-2">
-                        <p class="text-xs text-neutral-600 dark:text-neutral-400">Saved Presets:</p>
-                        <div class="flex flex-wrap gap-2">
-                          <div
-                            v-for="preset in savedPresets"
-                            :key="preset"
-                            class="flex items-center gap-1 px-2 py-1 bg-neutral-100 dark:bg-neutral-800 rounded"
-                          >
-                            <button
-                              @click="loadPreset(preset)"
-                              class="text-xs text-neutral-700 dark:text-neutral-300 hover:text-green-600 dark:hover:text-green-400"
-                            >
-                              {{ preset }}
-                            </button>
-                            <button
-                              @click="deletePreset(preset)"
-                              class="ml-1 text-red-500 hover:text-red-600"
-                            >
-                              <Icon name="mdi:close" size="14" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
@@ -619,7 +562,7 @@
             @click="generateQuiz"
             class="bg-green-500 hover:bg-green-600 text-black font-medium px-4 py-2 rounded-md"
           >
-            Generate Quiz
+            {{ generationType === 'showcase' ? 'Select Quiz' : 'Generate Quiz' }}
           </button>
         </div>
       </div>
@@ -757,8 +700,6 @@ const questions = ref<Question[]>([])
 // Custom quiz configuration
 const quizConfig = useQuizConfig()
 const quizConfigLoaded = ref(false)
-const presetName = ref('')
-const savedPresets = ref<string[]>([])
 const questionTypesExpanded = ref(false)
 const advancedExpanded = ref(false)
 
@@ -796,7 +737,6 @@ const router = useRouter()
 onMounted(async () => {
   await quizConfig.loadQuestionTypes()
   quizConfigLoaded.value = true
-  savedPresets.value = quizConfig.getSavedPresets()
 
   // Load showcase quizzes
   try {
@@ -838,23 +778,6 @@ onMounted(async () => {
 const enabledQuestionCount = computed(() => {
   return quizConfig.enabledQuestionTypes.value.length
 })
-
-const savePreset = () => {
-  if (presetName.value && quizConfig.hasEnabledQuestions.value) {
-    quizConfig.savePreset(presetName.value)
-    savedPresets.value = quizConfig.getSavedPresets()
-    presetName.value = ''
-  }
-}
-
-const loadPreset = (name: string) => {
-  quizConfig.loadPreset(name)
-}
-
-const deletePreset = (name: string) => {
-  quizConfig.deletePreset(name)
-  savedPresets.value = quizConfig.getSavedPresets()
-}
 
 const randomizeWeights = () => {
   for (const qType of quizConfig.availableQuestionTypes.value) {

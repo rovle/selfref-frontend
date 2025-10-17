@@ -103,7 +103,6 @@ export default defineNuxtConfig({
     clientBundle: {
       // list of icons to include in the client bundle
       icons: [
-        'mdi:github',
         'mdi:white-balance-sunny',
         'material-symbols-light:dark-mode-rounded',
         'mdi:check',
