@@ -99,7 +99,7 @@
                       id="showcase"
                       value="showcase"
                       name="generationType"
-                      title="Showcase Quizzes"
+                      title="Curated Quizzes"
                       description="Play handcrafted puzzles from our collection."
                       :model-value="generationType"
                       @update:modelValue="(val: GenerationType) => (generationType = val)"
@@ -125,6 +125,7 @@
                   :value="mode.value"
                   name="difficultyLevel"
                   :label="mode.label"
+                  :description="mode.description"
                   :model-value="difficultyLevel"
                   @update:modelValue="(val) => (difficultyLevel = val)"
                 />
@@ -135,10 +136,10 @@
               <h3
                 class="mb-5 text-lg font-medium text-neutral-900 dark:text-white"
               >
-                Select a Showcase Quiz
+                Select a Curated Quiz
               </h3>
               <div v-if="!showcaseQuizzes.length" class="text-center py-8">
-                <p class="text-neutral-500 dark:text-neutral-400">Loading showcase quizzes...</p>
+                <p class="text-neutral-500 dark:text-neutral-400">Loading curated quizzes...</p>
               </div>
               <div v-else class="grid gap-4 md:grid-cols-2">
                 <div
@@ -664,18 +665,13 @@ type Question = {
 type QuizState = 'typeSelection' | 'setup' | 'solving'
 type AnswerState = 'unanswered' | 'correct' | 'incorrect'
 type GenerationType = 'difficulty' | 'custom' | 'showcase'
-type DifficultyLevel =
-  | 'very-easy'
-  | 'easy'
-  | 'medium'
-  | 'hard'
-  | 'very-hard'
-  | 'insane'
+type DifficultyLevel = 'easy' | 'medium' | 'hard'
 type DifficultyMode = {
   value: DifficultyLevel
   label: string
   questionCount: number
   answerUpToLetter: string
+  description?: string
 }
 
 const quizState = ref<QuizState>('typeSelection')
@@ -737,13 +733,13 @@ onMounted(async () => {
   await quizConfig.loadQuestionTypes()
   quizConfigLoaded.value = true
 
-  // Load showcase quizzes
+  // Load curated quizzes
   try {
     const response = await fetch(`${apiUrl}/api/curated-quizzes`)
     const data = await response.json()
     showcaseQuizzes.value = data.quizzes || []
   } catch (error) {
-    console.error('Failed to load showcase quizzes:', error)
+    console.error('Failed to load curated quizzes:', error)
   }
 
   // Check if we're loading a shared quiz (with null safety)
@@ -798,27 +794,9 @@ const wrongOptionsHidden = ref(false)
 const showSaveModal = ref(false)
 
 const difficultyModes: DifficultyMode[] = [
-  {
-    value: 'very-easy',
-    label: 'Very Easy',
-    questionCount: 3,
-    answerUpToLetter: 'C',
-  },
-  { value: 'easy', label: 'Easy', questionCount: 5, answerUpToLetter: 'D' },
-  { value: 'medium', label: 'Medium', questionCount: 7, answerUpToLetter: 'D' },
-  { value: 'hard', label: 'Hard', questionCount: 10, answerUpToLetter: 'E' },
-  {
-    value: 'very-hard',
-    label: 'Very Hard',
-    questionCount: 20,
-    answerUpToLetter: 'E',
-  },
-  {
-    value: 'insane',
-    label: 'Insane',
-    questionCount: 25,
-    answerUpToLetter: 'F',
-  },
+  { value: 'easy', label: 'Easy', questionCount: 6, answerUpToLetter: 'C', description: '6 questions, 3 options' },
+  { value: 'medium', label: 'Medium', questionCount: 12, answerUpToLetter: 'D', description: '12 questions, 4 options' },
+  { value: 'hard', label: 'Hard', questionCount: 24, answerUpToLetter: 'E', description: '24 questions, 5 options' },
 ]
 
 const generateQuiz = async () => {
@@ -826,9 +804,9 @@ const generateQuiz = async () => {
     let response
 
     if (generationType.value === 'showcase') {
-      // Generate from showcase/curated quiz
+      // Generate from curated quiz
       if (!selectedShowcaseId.value) {
-        showNotification('Please select a showcase quiz', 'warning', 3000)
+        showNotification('Please select a curated quiz', 'warning', 3000)
         return
       }
 
@@ -1191,7 +1169,7 @@ const cardTitle = computed(() => {
     case 'typeSelection':
       return 'Create your quiz'
     case 'setup':
-      return 'Create your quiz'
+      return generationType.value === 'showcase' ? 'Select a quiz' : 'Create your quiz'
     case 'solving':
       return allCorrect.value ? '🎉 Quiz Completed!' : 'Solve the quiz'
     default:
@@ -1204,7 +1182,7 @@ const cardDescription = computed(() => {
     case 'typeSelection':
       return 'Select how you want to generate your quiz'
     case 'setup':
-      return 'Choose your quiz parameters'
+      return generationType.value === 'showcase' ? '' : 'Choose your quiz parameters'
     case 'solving':
       return allCorrect.value
         ? 'You solved it! Try another quiz or retry this one.'

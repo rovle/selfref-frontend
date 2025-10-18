@@ -22,28 +22,26 @@
         <div class="w-full text-lg font-semibold">
           {{ label }}
         </div>
+        <div v-if="description" class="w-full text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+          {{ description }}
+        </div>
       </div>
     </label>
   </div>
 </template>
 
 <script setup lang="ts">
-type DifficultyLevel =
-  | 'very-easy'
-  | 'easy'
-  | 'medium'
-  | 'hard'
-  | 'very-hard'
-  | 'insane'
+type DifficultyLevel = 'easy' | 'medium' | 'hard'
 
 const isDifficultyLevel = (value: string): value is DifficultyLevel =>
-  ['very-easy', 'easy', 'medium', 'hard', 'very-hard', 'insane'].includes(value)
+  ['easy', 'medium', 'hard'].includes(value)
 
 defineProps<{
   id: string
   value: DifficultyLevel
   name: string
   label: string
+  description?: string
   modelValue: DifficultyLevel
 }>()
 
