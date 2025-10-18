@@ -17,14 +17,6 @@
       </div>
       <div class="flex items-center gap-4 sm:gap-12">
         <div class="flex items-center gap-4 sm:gap-8">
-          <NuxtLink
-            to="/about"
-            aria-label="About"
-            class="xs:text-sm sm:text-md hover:opacity-70"
-            active-class="font-bold cursor-default hover:!opacity-100"
-          >
-            About
-          </NuxtLink>
           <a
             href="/create"
             aria-label="Create"

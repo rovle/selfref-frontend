@@ -387,8 +387,7 @@
         <div v-else-if="quizState === 'solving' || quizState === 'results'">
           <p class="mb-6 text-neutral-800 dark:text-neutral-200 text-sm">
             This quiz has {{ uniqueQuiz ? 'a unique' : 'more than one' }}
-            solution and was generated in
-            {{ generationTime?.toFixed(4) }} seconds.
+            solution.
           </p>
 
           <!-- Toggle wrong options -->

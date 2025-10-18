@@ -10,21 +10,24 @@
         </ul>
         <h1
           class="mb-8 text-center lg:text-left text-3xl sm:text-4xl lg:text-5xl font-bold text-neutral-800 dark:text-neutral-100 z-50 font-display">
-          Build Custom
-          <span class="block">Self-Referential Quizzes in Seconds</span>
+          <span class="block">Build and Solve Self-Refential Quizzes</span>
         </h1>
         <p class="mb-8 text-center lg:text-left text-black dark:text-white z-50">
-          Create, customize, and solve guaranteed-solvable logic tests, perfect
-          for human enjoyment or evaluating AI reasoning capabilities.
+          Inspired by Jim Propp's
+          <NuxtLink
+            to="https://faculty.uml.edu/jpropp/srat-Q.txt"
+            class="underline underline-offset-4 hover:opacity-70"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Self-Referential Aptitude Test (S.R.A.T.)</NuxtLink>,
+          this websites hosts a generator of self-referential quizzes,
+          as well as an interface for (trying to) solve them.
         </p>
         <div class="flex gap-4 z-50">
           <NuxtLink to="/create" aria-label="Start generating"
             class="bg-green-500 hover:bg-green-600 text-black rounded-md font-medium px-4 py-2">
             Start Creating
-          </NuxtLink>
-          <NuxtLink to="/about" aria-label="Learn more"
-            class="bg-neutral-100 dark:bg-neutral-900 hover:bg-neutral-200 dark:hover:bg-neutral-800 dark:text-neutral-200 border-2 border-neutral-700 dark:border-neutral-400 rounded-md font-medium px-4 py-2">
-            Learn more
           </NuxtLink>
         </div>
       </div>
