@@ -135,8 +135,7 @@ const saveQuiz = async () => {
   progressLink.value = ''
 
   try {
-    const apiUrl = useRuntimeConfig().public.apiUrl
-    const response = await fetch(`${apiUrl}/quizzes/${props.quizId}/save`, {
+    const response = await fetch(`/api/quizzes/${props.quizId}/save`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

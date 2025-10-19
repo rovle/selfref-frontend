@@ -56,9 +56,7 @@ export const useQuizConfig = () => {
     error.value = null
 
     try {
-      const runtimeConfig = useRuntimeConfig()
-      const apiUrl = runtimeConfig.public.apiUrl || 'http://127.0.0.1:8000'
-      const response = await $fetch(`${apiUrl}/api/quiz-config`)
+      const response = await $fetch('/api/quiz-config')
       availableQuestionTypes.value = response.question_types
       availableProperties.value = response.available_properties
 

@@ -654,7 +654,6 @@ useSeoMeta({
 })
 
 const config = useRuntimeConfig()
-const apiUrl = config.public.apiUrl
 
 type Question = {
   id: number
@@ -735,7 +734,7 @@ onMounted(async () => {
 
   // Load curated quizzes
   try {
-    const response = await fetch(`${apiUrl}/api/curated-quizzes`)
+    const response = await fetch('/api/curated-quizzes')
     const data = await response.json()
     showcaseQuizzes.value = data.quizzes || []
   } catch (error) {
@@ -810,7 +809,7 @@ const generateQuiz = async () => {
         return
       }
 
-      response = await fetch(`${apiUrl}/quizzes/from-curated/${selectedShowcaseId.value}`, {
+      response = await fetch(`/api/quizzes/from-curated/${selectedShowcaseId.value}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })
@@ -839,7 +838,7 @@ const generateQuiz = async () => {
         }
       }
 
-      response = await fetch(`${apiUrl}/quizzes`, {
+      response = await fetch('/api/quizzes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1008,8 +1007,7 @@ const validateAnswers = async () => {
     return question.options[selectedIdx].option
   })
 
-  const apiUrl = useRuntimeConfig().public.apiUrl
-  const response = await fetch(`${apiUrl}/quizzes/${quizId.value}/check`, {
+  const response = await fetch(`/api/quizzes/${quizId.value}/check`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ answers: selectedAnswers }),
@@ -1105,8 +1103,7 @@ const retryQuiz = async () => {
   }
 
   try {
-    const apiUrl = useRuntimeConfig().public.apiUrl
-    const response = await fetch(`${apiUrl}/quizzes/${quizId.value}`)
+    const response = await fetch(`/api/quizzes/${quizId.value}`)
 
     if (!response.ok) {
       if (response.status === 404) {
@@ -1133,8 +1130,7 @@ const toggleWrongOptions = () => {
 
 const loadSharedQuiz = async (loadQuizId: string, loadShareId: string) => {
   try {
-    const apiUrl = useRuntimeConfig().public.apiUrl
-    const response = await fetch(`${apiUrl}/quizzes/${loadQuizId}`)
+    const response = await fetch(`/api/quizzes/${loadQuizId}`)
 
     if (!response.ok) {
       console.error('Failed to load shared quiz')

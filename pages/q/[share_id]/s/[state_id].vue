@@ -32,8 +32,7 @@ onMounted(async () => {
   const stateId = route.params.state_id as string
 
   try {
-    const apiUrl = useRuntimeConfig().public.apiUrl
-    const response = await fetch(`${apiUrl}/q/${shareId}/s/${stateId}`)
+    const response = await fetch(`/api/q/${shareId}/s/${stateId}`)
 
     if (!response.ok) {
       if (response.status === 404) {

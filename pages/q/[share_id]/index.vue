@@ -37,8 +37,7 @@ onMounted(async () => {
   }
 
   try {
-    const apiUrl = useRuntimeConfig().public.apiUrl
-    const response = await fetch(`${apiUrl}/q/${shareId}`)
+    const response = await fetch(`/api/q/${shareId}`)
 
     if (!response.ok) {
       if (response.status === 404) {
