@@ -600,7 +600,7 @@
           <div class="col-span-2 sm:col-span-1 flex flex-wrap gap-2">
             <button
               @click="goBack"
-              class="flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+              class="hidden lg:flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
             >
               <Icon name="mdi:arrow-left" class="w-4 h-4 mr-1 sm:mr-2" />
               {{ allCorrect ? 'New Quiz' : 'Go Back' }}
@@ -608,7 +608,7 @@
             <button
               v-if="!allCorrect"
               @click="resetQuiz"
-              class="flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+              class="hidden lg:flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
             >
               Reset
             </button>
