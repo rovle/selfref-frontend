@@ -569,41 +569,10 @@
 
       <div
         v-if="quizState === 'solving'"
-        class="flex justify-between items-center gap-3 mt-3 px-6 pb-6"
+        class="mt-3 px-3 sm:px-6 pb-4 sm:pb-6 space-y-3"
       >
-        <div class="flex gap-3">
-          <button
-            @click="goBack"
-            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-          >
-            <Icon name="mdi:arrow-left" class="w-4 h-4 mr-2" />
-            {{ allCorrect ? 'New Quiz' : 'Go Back' }}
-          </button>
-          <button
-            v-if="!allCorrect"
-            @click="resetQuiz"
-            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-          >
-            Reset
-          </button>
-          <button
-            v-if="allCorrect"
-            @click="retryQuiz"
-            class="flex items-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
-          >
-            Try Again
-          </button>
-          <button
-            @click="showSaveModal = true"
-            class="flex items-center bg-blue-500 hover:bg-blue-600 text-white font-medium text-sm px-4 py-2 rounded-md"
-          >
-            <Icon name="mdi:content-save" class="w-4 h-4 mr-2" />
-            Share / Save Progress
-          </button>
-        </div>
-
-        <!-- Inline message between buttons -->
-        <div class="flex-1 flex justify-center">
+        <!-- Message row (full width, above buttons) -->
+        <div class="flex justify-center">
           <transition
             enter-active-class="transition-all duration-300 ease-out"
             enter-from-class="opacity-0 scale-95"
@@ -615,7 +584,7 @@
             <div
               v-if="showMessage"
               :class="{
-                'px-4 py-2 rounded-md text-sm font-medium': true,
+                'px-4 py-2 rounded-md text-xs sm:text-sm font-medium text-center': true,
                 'text-green-800 bg-green-100 dark:text-green-400 dark:bg-green-900': messageType === 'success',
                 'text-red-800 bg-red-100 dark:text-red-400 dark:bg-red-900': messageType === 'error',
                 'text-yellow-800 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900': messageType === 'warning'
@@ -627,11 +596,48 @@
           </transition>
         </div>
 
-        <div class="flex">
+        <!-- Button container with responsive grid -->
+        <div class="grid grid-cols-2 gap-2 sm:flex sm:justify-between sm:gap-3">
+          <!-- Left button group -->
+          <div class="col-span-2 sm:col-span-1 flex flex-wrap gap-2">
+            <button
+              @click="goBack"
+              class="flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+            >
+              <Icon name="mdi:arrow-left" class="w-4 h-4 mr-1 sm:mr-2" />
+              {{ allCorrect ? 'New Quiz' : 'Go Back' }}
+            </button>
+            <button
+              v-if="!allCorrect"
+              @click="resetQuiz"
+              class="flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+            >
+              Reset
+            </button>
+            <button
+              v-if="allCorrect"
+              @click="retryQuiz"
+              class="flex items-center justify-center bg-neutral-900 dark:bg-white text-white dark:text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 hover:bg-black/90 dark:hover:bg-white/90 rounded-md"
+            >
+              Try Again
+            </button>
+          </div>
+
+          <!-- Share button (full width on mobile in second row) -->
+          <button
+            @click="showSaveModal = true"
+            class="col-span-1 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md"
+          >
+            <Icon name="mdi:content-save" class="w-4 h-4 mr-1 sm:mr-2" />
+            <span class="hidden xs:inline sm:inline">Share / Save</span>
+            <span class="inline xs:hidden sm:hidden">Share</span>
+          </button>
+
+          <!-- Submit button (positioned in grid on mobile) -->
           <button
             v-if="!allCorrect"
             @click="submitQuiz"
-            class="bg-green-500 hover:bg-green-600 text-black font-medium text-sm px-4 py-2 rounded-md"
+            class="col-span-1 bg-green-500 hover:bg-green-600 text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md"
           >
             Submit
           </button>
