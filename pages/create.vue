@@ -572,29 +572,27 @@
         class="mt-3 px-3 sm:px-6 pb-4 sm:pb-6 space-y-3"
       >
         <!-- Message row (full width, above buttons) -->
-        <div class="flex justify-center">
-          <transition
-            enter-active-class="transition-all duration-300 ease-out"
-            enter-from-class="opacity-0 scale-95"
-            enter-to-class="opacity-100 scale-100"
-            leave-active-class="transition-all duration-1000 ease-in-out"
-            leave-from-class="opacity-100 scale-100"
-            leave-to-class="opacity-0 scale-95"
+        <transition
+          enter-active-class="transition-all duration-300 ease-out"
+          enter-from-class="opacity-0 scale-95"
+          enter-to-class="opacity-100 scale-100"
+          leave-active-class="transition-all duration-1000 ease-in-out"
+          leave-from-class="opacity-100 scale-100"
+          leave-to-class="opacity-0 scale-95"
+        >
+          <div
+            v-if="showMessage"
+            :class="{
+              'w-full px-4 py-2 rounded-md text-xs sm:text-sm font-medium text-center': true,
+              'text-green-800 bg-green-100 dark:text-green-400 dark:bg-green-900': messageType === 'success',
+              'text-red-800 bg-red-100 dark:text-red-400 dark:bg-red-900': messageType === 'error',
+              'text-yellow-800 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900': messageType === 'warning'
+            }"
+            role="alert"
           >
-            <div
-              v-if="showMessage"
-              :class="{
-                'px-4 py-2 rounded-md text-xs sm:text-sm font-medium text-center': true,
-                'text-green-800 bg-green-100 dark:text-green-400 dark:bg-green-900': messageType === 'success',
-                'text-red-800 bg-red-100 dark:text-red-400 dark:bg-red-900': messageType === 'error',
-                'text-yellow-800 bg-yellow-100 dark:text-yellow-400 dark:bg-yellow-900': messageType === 'warning'
-              }"
-              role="alert"
-            >
-              {{ message }}
-            </div>
-          </transition>
-        </div>
+            {{ message }}
+          </div>
+        </transition>
 
         <!-- Button container with responsive grid -->
         <div class="grid grid-cols-2 gap-2 sm:flex sm:justify-between sm:gap-3">
