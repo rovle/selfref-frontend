@@ -621,24 +621,27 @@
             </button>
           </div>
 
-          <!-- Share button (full width on mobile in second row) -->
-          <button
-            @click="showSaveModal = true"
-            class="col-span-1 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md"
-          >
-            <Icon name="mdi:content-save" class="w-4 h-4 mr-1 sm:mr-2" />
-            <span class="hidden xs:inline sm:inline">Share / Save</span>
-            <span class="inline xs:hidden sm:hidden">Share</span>
-          </button>
+          <!-- Right button group -->
+          <div class="col-span-2 sm:col-span-1 flex flex-wrap gap-2 sm:justify-end">
+            <!-- Share button (full width on mobile in second row) -->
+            <button
+              @click="showSaveModal = true"
+              class="col-span-1 flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md"
+            >
+              <Icon name="mdi:content-save" class="w-4 h-4 mr-1 sm:mr-2" />
+              <span class="hidden xs:inline sm:inline">Share / Save</span>
+              <span class="inline xs:hidden sm:hidden">Share</span>
+            </button>
 
-          <!-- Submit button (positioned in grid on mobile) -->
-          <button
-            v-if="!allCorrect"
-            @click="submitQuiz"
-            class="col-span-1 bg-green-500 hover:bg-green-600 text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md"
-          >
-            Submit
-          </button>
+            <!-- Submit button (positioned in grid on mobile) -->
+            <button
+              v-if="!allCorrect"
+              @click="submitQuiz"
+              class="col-span-1 bg-green-500 hover:bg-green-600 text-black font-medium text-xs sm:text-sm px-3 sm:px-4 py-2 rounded-md"
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </div>
 
